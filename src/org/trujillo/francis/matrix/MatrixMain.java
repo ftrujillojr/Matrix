@@ -24,9 +24,6 @@ public class MatrixMain {
         } catch (IllegalDimensionException ex) {
             Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
-
     }
 
 }

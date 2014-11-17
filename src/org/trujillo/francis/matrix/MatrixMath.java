@@ -107,6 +107,10 @@ public class MatrixMath {
             String msg = "You specified to exclude a row # " + excluding_row + " and index was out of bounds.";
             throw new IllegalDimensionException(msg);
         }
+        if(excluding_col > matrix.getNcols() -1) {
+            String msg = "You specified to exclude a col # " + excluding_col + " and index was out of bounds.";
+            throw new IllegalDimensionException(msg);
+        }
         
         Matrix mat = new Matrix(matrix.getNrows() - 1, matrix.getNcols() - 1);
         int r = -1;
