@@ -42,6 +42,23 @@ public class MatrixMath {
     }
 
     /**
+     * Get the identity matrix for a SQUARE matrix of size.
+     * @param size
+     * @return 
+     */
+    public static Matrix getIndentityMatrix(int size) {
+        Matrix idMat = new Matrix(size, size);
+        
+        for (int ii = 0; ii < size; ii++) {
+            for (int jj = 0; jj < size; jj++) {
+                if(ii == jj) {
+                    idMat.setValueAt(ii, jj, 1.0);
+                }
+            }
+        }
+        return(idMat);
+    }
+    /**
      * Determinant of a square matrix The following function find the
      * determinant in a recursively.
      * 
@@ -61,7 +78,7 @@ public class MatrixMath {
      */
     public static double determinant(Matrix matrix) throws NoSquareException, IllegalDimensionException {
         if (!matrix.isSquare()) {
-            throw new NoSquareException("matrix need to be square.");
+            throw new NoSquareException("ERROR: Matrix need to be square. \n" + matrix.toString());
         }
         if (matrix.size() == 1) {
             return matrix.getValueAt(0, 0);

@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 public class MatrixMain {
 
     public static void main(String[] args) {
-        try {
+//        try {
             double[][] dArray = new double[][] {
                 {1,2},
                 {0,3},
@@ -18,12 +18,14 @@ public class MatrixMain {
             Matrix tmatrix = MatrixMath.transpose(matrix);
             System.out.println("Transpose\n" + tmatrix.toString());
             
+            Matrix idMat = MatrixMath.getIndentityMatrix(4);
+            System.out.println("idMat \n" + idMat.toString());
             
-            Matrix subMatrix = MatrixMath.createSubMatrix(matrix, 1, 1);
-            System.out.println("Sub Matrix 0,0 removed\n" + subMatrix.toString());
-        } catch (IllegalDimensionException ex) {
-            Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            
+//        } 
+//        catch (IllegalDimensionException ex) {
+//            Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
 }
