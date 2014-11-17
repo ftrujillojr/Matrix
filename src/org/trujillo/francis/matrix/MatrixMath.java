@@ -118,6 +118,7 @@ public class MatrixMath {
      * @param excluding_row
      * @param excluding_col
      * @return
+     * @throws org.trujillo.francis.matrix.IllegalDimensionException
      */
     public static Matrix createSubMatrix(Matrix matrix, int excluding_row, int excluding_col) throws IllegalDimensionException {
         if(excluding_row > matrix.getNrows() -1) {
@@ -162,6 +163,8 @@ public class MatrixMath {
                 mat.setValueAt(i, j, changeSign(i) * changeSign(j) * determinant(createSubMatrix(matrix, i, j)));
             }
         }
+        
+        System.out.println("cofactor \n" + mat);
 
         return mat;
     }
