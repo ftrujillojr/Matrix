@@ -12,7 +12,7 @@ public class MatrixMath {
      * Transpose of a matrix - Swap the columns with rows
      *
      * @param matrix
-     * @return
+     * @return okay
      */
     public static Matrix transpose(Matrix matrix) {
         Matrix transposedMatrix = new Matrix(matrix.getNcols(), matrix.getNrows());
@@ -41,10 +41,10 @@ public class MatrixMath {
         return (transpose(cofactor(matrix)).scalarMultiplication(1.0 / determinant(matrix)));
     }
 
-    /**
+    /** 
      * Get the identity matrix for a SQUARE matrix of size.
      * @param size
-     * @return 
+     * @return okay
      */
     public static Matrix getIndentityMatrix(int size) {
         Matrix idMat = new Matrix(size, size);
