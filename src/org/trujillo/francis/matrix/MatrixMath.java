@@ -1,5 +1,9 @@
 package org.trujillo.francis.matrix;
 
+/**
+ * http://matrix.reshish.com/
+ * 
+ */
 public class MatrixMath {
 
     /**
