@@ -97,7 +97,9 @@ public class MatrixMath {
         }
         double sum = 0.0;
         for (int i = 0; i < matrix.getNcols(); i++) {
-            sum += changeSign(i) * matrix.getValueAt(0, i) * determinant(createSubMatrix(matrix, 0, i));
+            Matrix subMat = createSubMatrix(matrix, 0, i);
+            System.out.println("SUB MAT => \n" + subMat);
+            sum += changeSign(i) * matrix.getValueAt(0, i) * determinant(subMat);
         }
         return sum;
     }
