@@ -70,6 +70,10 @@ public class MatrixMath {
      * In the second case the transformation has an inverse operation exactly when the determinant is nonzero.
      * 
      * The determinant of the identity matrix is 1.
+     * 
+     * Using the first row to walk across to do cofactor expansion. 
+     * http://mathworld.wolfram.com/DeterminantExpansionbyMinors.html
+     * 
      *
      * @param matrix
      * @return

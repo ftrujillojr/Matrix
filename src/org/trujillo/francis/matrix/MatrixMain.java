@@ -23,7 +23,7 @@ public class MatrixMain {
 
             double det1 = MatrixMath.determinant(matrix);
 
-            System.out.println("det1 => " + det1);
+            System.out.println("det1 => " + det1 + "\n");
 
             Matrix subMat = MatrixMath.createSubMatrix(matrix, 1, 1);
             System.out.println("subMat\n" + subMat);
