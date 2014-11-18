@@ -2,7 +2,7 @@ package org.trujillo.francis.matrix;
 
 /**
  * http://matrix.reshish.com/
- * 
+ *
  */
 public class MatrixMath {
 
@@ -46,48 +46,53 @@ public class MatrixMath {
     public static Matrix inverse(Matrix matrix) throws NoSquareException, IllegalDimensionException, NoSolutionOrMultipleSolutions {
         System.out.println("\n*** Calculating inverse() of\n" + matrix.toString());
         double det = determinant(matrix);
-        if(det == 0 ) {
+        if (det == 0) {
             String msg = "Matrix => return ZERO for determinant.  Has NO solution or multiple solutions.\n";
             msg += matrix.toString();
             throw new NoSolutionOrMultipleSolutions(msg);
         }
-        System.out.println("SCALAR MULT by " + (1.0/det) + "      DET was " + det + "\n");
+        System.out.println("SCALAR MULT by " + (1.0 / det) + "      DET was " + det + "\n");
         return (transpose(cofactor(matrix)).scalarMultiplication(1.0 / det));
     }
 
-    /** 
+    /**
      * Get the identity matrix for a SQUARE matrix of size.
+     *
      * @param size
      * @return okay
      */
     public static Matrix getIndentityMatrix(int size) {
         Matrix idMat = new Matrix(size, size);
-        
+
         for (int ii = 0; ii < size; ii++) {
             for (int jj = 0; jj < size; jj++) {
-                if(ii == jj) {
+                if (ii == jj) {
                     idMat.setValueAt(ii, jj, 1.0);
                 }
             }
         }
-        return(idMat);
+        return (idMat);
     }
+
     /**
      * Determinant of a square matrix The following function find the
      * determinant in a recursively.
-     * 
-     * In linear algebra, the determinant is a value associated with a square matrix.
-     * 
-     * In the first case the system has a unique solution exactly when the determinant is nonzero; 
-     * when the determinant is zero there are either no solutions or many solutions
-     * 
-     * In the second case the transformation has an inverse operation exactly when the determinant is nonzero.
-     * 
+     *
+     * In linear algebra, the determinant is a value associated with a square
+     * matrix.
+     *
+     * In the first case the system has a unique solution exactly when the
+     * determinant is nonzero; when the determinant is zero there are either no
+     * solutions or many solutions
+     *
+     * In the second case the transformation has an inverse operation exactly
+     * when the determinant is nonzero.
+     *
      * The determinant of the identity matrix is 1.
-     * 
-     * Using the first row to walk across to do cofactor expansion. 
+     *
+     * Using the first row to walk across to do cofactor expansion.
      * http://mathworld.wolfram.com/DeterminantExpansionbyMinors.html
-     * 
+     *
      *
      * @param matrix
      * @return okay
@@ -98,11 +103,11 @@ public class MatrixMath {
         if (!matrix.isSquare()) {
             throw new NoSquareException("ERROR: Matrix need to be square. \n" + matrix.toString());
         }
-        String callingMethodName = Thread.currentThread().getStackTrace()[2].getMethodName(); 
-        if(callingMethodName.equals("determinant") == false) {
+        String callingMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        if (callingMethodName.equals("determinant") == false) {
             System.out.println("*** calling determinant  => from " + callingMethodName + "\n" + matrix.toString());
         }
-        
+
         if (matrix.size() == 1) {
             return matrix.getValueAt(0, 0);
         }
@@ -113,16 +118,16 @@ public class MatrixMath {
             //
             // (ad) - (bc)
             double det = (matrix.getValueAt(0, 0) * matrix.getValueAt(1, 1)) - (matrix.getValueAt(0, 1) * matrix.getValueAt(1, 0));
-            return(det);
+            return (det);
         }
-        
+
         double sum = 0.0;
         for (int i = 0; i < matrix.getNcols(); i++) {
             Matrix subMat = createSubMatrix(matrix, 0, i);
             double det = determinant(subMat);
             double total = matrix.getValueAt(0, i) * det;
-            
-            System.out.println("SUB MAT " + 0 +" " + i + " => " + matrix.getValueAt(0,i) +" mult by DET below  \n" + subMat + "DET " + det+ " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
+
+            System.out.println("SUB MAT " + 0 + " " + i + " => " + matrix.getValueAt(0, i) + " mult by DET below  \n" + subMat + "DET " + det + " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
             sum += changeSign(i) * total;
         }
         return sum;
@@ -151,15 +156,15 @@ public class MatrixMath {
      * @throws org.trujillo.francis.matrix.IllegalDimensionException
      */
     public static Matrix createSubMatrix(Matrix matrix, int excluding_row, int excluding_col) throws IllegalDimensionException {
-        if(excluding_row > matrix.getNrows() -1) {
+        if (excluding_row > matrix.getNrows() - 1) {
             String msg = "You specified to exclude a row # " + excluding_row + " and index was out of bounds.";
             throw new IllegalDimensionException(msg);
         }
-        if(excluding_col > matrix.getNcols() -1) {
+        if (excluding_col > matrix.getNcols() - 1) {
             String msg = "You specified to exclude a col # " + excluding_col + " and index was out of bounds.";
             throw new IllegalDimensionException(msg);
         }
-        
+
         Matrix mat = new Matrix(matrix.getNrows() - 1, matrix.getNcols() - 1);
         int r = -1;
         for (int i = 0; i < matrix.getNrows(); i++) {
@@ -189,7 +194,7 @@ public class MatrixMath {
     public static Matrix cofactor(Matrix matrix) throws NoSquareException, IllegalDimensionException {
         Matrix mat = new Matrix(matrix.getNrows(), matrix.getNcols());
         double total = 0.0;
-        
+
         for (int i = 0; i < matrix.getNrows(); i++) {
             for (int j = 0; j < matrix.getNcols(); j++) {
                 double det = determinant(createSubMatrix(matrix, i, j));
@@ -254,6 +259,17 @@ public class MatrixMath {
                 for (int k = 0; k < matrix1.getNcols(); k++) {
                     sum += matrix1.getValueAt(i, k) * matrix2.getValueAt(k, j);
                 }
+                
+                if (sum > 0.99999999999999 && sum < 1.0) {
+                    sum = 1.0;
+                }
+                
+                // -0.0 problem.
+                if (sum > -0.1 && sum < 0.0000000000000001) {
+                    sum = 0.00;
+                } 
+                
+                //System.err.println("i " + i + " j " + j + " " + sum);
                 multipliedMatrix.setValueAt(i, j, sum);
             }
         }
