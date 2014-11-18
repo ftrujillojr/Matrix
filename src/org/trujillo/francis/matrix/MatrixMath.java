@@ -25,6 +25,7 @@ public class MatrixMath {
                 transposedMatrix.setValueAt(j, i, matrix.getValueAt(i, j));
             }
         }
+        System.out.println("TRANSPOSE \n" + transposedMatrix);
         return transposedMatrix;
     }
 
@@ -43,11 +44,14 @@ public class MatrixMath {
      * @throws org.trujillo.francis.matrix.NoSolutionOrMultipleSolutions
      */
     public static Matrix inverse(Matrix matrix) throws NoSquareException, IllegalDimensionException, NoSolutionOrMultipleSolutions {
+        System.out.println("\n*** Calculating inverse() of\n" + matrix.toString());
         double det = determinant(matrix);
         if(det == 0 ) {
-            String msg = "Matrix => return ZERO for determinant.  Has No solution or multiple solutions.\n";
+            String msg = "Matrix => return ZERO for determinant.  Has NO solution or multiple solutions.\n";
+            msg += matrix.toString();
             throw new NoSolutionOrMultipleSolutions(msg);
         }
+        System.out.println("SCALAR MULT by " + (1.0/det) + "      DET was " + det + "\n");
         return (transpose(cofactor(matrix)).scalarMultiplication(1.0 / det));
     }
 
@@ -94,6 +98,11 @@ public class MatrixMath {
         if (!matrix.isSquare()) {
             throw new NoSquareException("ERROR: Matrix need to be square. \n" + matrix.toString());
         }
+        String callingMethodName = Thread.currentThread().getStackTrace()[2].getMethodName(); 
+        if(callingMethodName.equals("determinant") == false) {
+            System.out.println("*** calling determinant  => from " + callingMethodName + "\n" + matrix.toString());
+        }
+        
         if (matrix.size() == 1) {
             return matrix.getValueAt(0, 0);
         }
@@ -179,14 +188,18 @@ public class MatrixMath {
      */
     public static Matrix cofactor(Matrix matrix) throws NoSquareException, IllegalDimensionException {
         Matrix mat = new Matrix(matrix.getNrows(), matrix.getNcols());
+        double total = 0.0;
+        
         for (int i = 0; i < matrix.getNrows(); i++) {
             for (int j = 0; j < matrix.getNcols(); j++) {
-                mat.setValueAt(i, j, changeSign(i) * changeSign(j) * determinant(createSubMatrix(matrix, i, j)));
+                double det = determinant(createSubMatrix(matrix, i, j));
+                double val = changeSign(i) * changeSign(j) * det;
+                System.out.println("DET (cofactor) " + det + "  Value " + val + "\n");
+                total += val;
+                mat.setValueAt(i, j, val);
             }
         }
-        
-        System.out.println("cofactor \n" + mat);
-
+        System.out.println("COFACTOR with DET total => " + total + "\n" + mat.toString());
         return mat;
     }
 
