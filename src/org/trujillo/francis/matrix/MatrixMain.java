@@ -29,6 +29,7 @@ public class MatrixMain {
             System.out.println("====================================");
             
             Matrix resultMatrix = MatrixMath.multiply(matrix, invMatrix);
+            System.out.println("Original Matrix \n" + matrix.toString());
             System.out.println("SHOULD be EQUAL to IDENTITY matrix \n" + resultMatrix);
 
 
