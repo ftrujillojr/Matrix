@@ -23,12 +23,10 @@ public class MatrixMain {
             System.out.println("====================================");
             System.out.println("Original \n" + matrix.toString());
 
-            double det1 = MatrixMath.determinant(matrix);
+            double detOriginal = MatrixMath.determinant(matrix);
 
-            System.out.println("det1 => " + det1 + "\n");
+            System.out.println("DET original => " + detOriginal + "\n");
 
-            Matrix subMat = MatrixMath.createSubMatrix(matrix, 1, 1);
-            System.out.println("subMat\n" + subMat);
 
         } catch (NoSquareException ex) {
             Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);

@@ -40,9 +40,15 @@ public class MatrixMath {
      * @return
      * @throws NoSquareException
      * @throws org.trujillo.francis.matrix.IllegalDimensionException
+     * @throws org.trujillo.francis.matrix.NoSolutionOrMultipleSolutions
      */
-    public static Matrix inverse(Matrix matrix) throws NoSquareException, IllegalDimensionException {
-        return (transpose(cofactor(matrix)).scalarMultiplication(1.0 / determinant(matrix)));
+    public static Matrix inverse(Matrix matrix) throws NoSquareException, IllegalDimensionException, NoSolutionOrMultipleSolutions {
+        double det = determinant(matrix);
+        if(det == 0 ) {
+            String msg = "Matrix => return ZERO for determinant.  Has No solution or multiple solutions.\n";
+            throw new NoSolutionOrMultipleSolutions(msg);
+        }
+        return (transpose(cofactor(matrix)).scalarMultiplication(1.0 / det));
     }
 
     /** 
@@ -80,7 +86,7 @@ public class MatrixMath {
      * 
      *
      * @param matrix
-     * @return
+     * @return okay
      * @throws NoSquareException
      * @throws org.trujillo.francis.matrix.IllegalDimensionException
      */
@@ -96,15 +102,19 @@ public class MatrixMath {
             // | a  b |
             // | c  d |
             //
-            // ad -bc
-            return (matrix.getValueAt(0, 0) * matrix.getValueAt(1, 1)) - (matrix.getValueAt(0, 1) * matrix.getValueAt(1, 0));
+            // (ad) - (bc)
+            double det = (matrix.getValueAt(0, 0) * matrix.getValueAt(1, 1)) - (matrix.getValueAt(0, 1) * matrix.getValueAt(1, 0));
+            return(det);
         }
+        
         double sum = 0.0;
         for (int i = 0; i < matrix.getNcols(); i++) {
             Matrix subMat = createSubMatrix(matrix, 0, i);
             double det = determinant(subMat);
-            System.out.println("SUB MAT " + 0 +" " + i + " => \n" + subMat + "DET " + det+ "\n");
-            sum += changeSign(i) * matrix.getValueAt(0, i) * det;
+            double total = matrix.getValueAt(0, i) * det;
+            
+            System.out.println("SUB MAT " + 0 +" " + i + " => " + matrix.getValueAt(0,i) +" mult by DET below  \n" + subMat + "DET " + det+ " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
+            sum += changeSign(i) * total;
         }
         return sum;
     }
@@ -113,7 +123,7 @@ public class MatrixMath {
      * Determine the sign; i.e. even numbers have sign + and odds -
      *
      * @param i
-     * @return
+     * @return okay
      */
     private static int changeSign(int i) {
         if (i % 2 == 0) {
