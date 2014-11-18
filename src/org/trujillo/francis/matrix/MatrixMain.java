@@ -27,6 +27,9 @@ public class MatrixMain {
             Matrix invMatrix = MatrixMath.inverse(matrix);
             System.out.println("INV Matrix \n" + invMatrix );
             System.out.println("====================================");
+            
+            Matrix resultMatrix = MatrixMath.multiply(matrix, invMatrix);
+            System.out.println("SHOULD be EQUAL to IDENTITY matrix \n" + resultMatrix);
 
 
         } catch (NoSquareException ex) {
