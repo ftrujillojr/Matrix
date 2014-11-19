@@ -6,10 +6,20 @@ package org.trujillo.francis.matrix;
  */
 public class MatrixMath {
 
+    private static boolean showWork = false;
+
     /**
      * This class a matrix utility class and cannot be instantiated.
      */
     private MatrixMath() {
+    }
+
+    public static void setShowWork() {
+        showWork = true;
+    }
+
+    public static void clrShowWork() {
+        showWork = false;
     }
 
     /**
@@ -25,7 +35,9 @@ public class MatrixMath {
                 transposedMatrix.setValueAt(j, i, matrix.getValueAt(i, j));
             }
         }
-        System.out.println("TRANSPOSE \n" + transposedMatrix);
+        if (showWork) {
+            System.out.println("TRANSPOSE \n" + transposedMatrix);
+        }
         return transposedMatrix;
     }
 
@@ -44,14 +56,18 @@ public class MatrixMath {
      * @throws org.trujillo.francis.matrix.NoSolutionOrMultipleSolutions
      */
     public static Matrix inverse(Matrix matrix) throws NoSquareException, IllegalDimensionException, NoSolutionOrMultipleSolutions {
-        System.out.println("\n*** Calculating inverse() of\n" + matrix.toString());
+        if (showWork) {
+            System.out.println("\n*** Calculating inverse() of\n" + matrix.toString());
+        }
         double det = determinant(matrix);
         if (det == 0) {
             String msg = "Matrix => return ZERO for determinant.  Has NO solution or multiple solutions.\n";
             msg += matrix.toString();
             throw new NoSolutionOrMultipleSolutions(msg);
         }
-        System.out.println("SCALAR MULT by " + (1.0 / det) + "      DET was " + det + "\n");
+        if (showWork) {
+            System.out.println("SCALAR MULT by " + (1.0 / det) + "      DET was " + det + "\n");
+        }
         return (transpose(cofactor(matrix)).scalarMultiplication(1.0 / det));
     }
 
@@ -105,7 +121,9 @@ public class MatrixMath {
         }
         String callingMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (callingMethodName.equals("determinant") == false) {
-            System.out.println("*** calling determinant  => from " + callingMethodName + "\n" + matrix.toString());
+            if (showWork) {
+                System.out.println("*** calling determinant  => from " + callingMethodName + "\n" + matrix.toString());
+            }
         }
 
         if (matrix.size() == 1) {
@@ -117,6 +135,9 @@ public class MatrixMath {
             // | c  d |
             //
             // (ad) - (bc)
+            if (showWork) {
+                System.out.println("(ad) - (bc)\n");
+            }
             double det = (matrix.getValueAt(0, 0) * matrix.getValueAt(1, 1)) - (matrix.getValueAt(0, 1) * matrix.getValueAt(1, 0));
             return (det);
         }
@@ -127,7 +148,9 @@ public class MatrixMath {
             double det = determinant(subMat);
             double total = matrix.getValueAt(0, i) * det;
 
-            System.out.println("SUB MAT " + 0 + " " + i + " => " + matrix.getValueAt(0, i) + " mult by DET below  \n" + subMat + "DET " + det + " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
+            if (showWork) {
+                System.out.println("SUB MAT " + 0 + " " + i + " => " + matrix.getValueAt(0, i) + " mult by DET below  \n" + subMat + "DET " + det + " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
+            }
             sum += changeSign(i) * total;
         }
         return sum;
@@ -199,12 +222,18 @@ public class MatrixMath {
             for (int j = 0; j < matrix.getNcols(); j++) {
                 double det = determinant(createSubMatrix(matrix, i, j));
                 double val = changeSign(i) * changeSign(j) * det;
-                System.out.println("DET (cofactor) " + det + "  Value " + val + "\n");
+                if (showWork) {
+                    String changeSignI = (i % 2 == 0) ? "NO" : "YES";
+                    String changeSignJ = (j % 2 == 0) ? "NO" : "YES";
+                    System.out.println("DET (cofactor) " + det + "  Value " + val + "    i,j: " + i + " " + j + " " + "ChangeSign: " + changeSignI + " " + changeSignJ + "\n");
+                }
                 total += val;
                 mat.setValueAt(i, j, val);
             }
         }
-        System.out.println("COFACTOR with DET total => " + total + "\n" + mat.toString());
+        if (showWork) {
+            System.out.println("COFACTOR with DET total => " + total + "\n" + mat.toString());
+        }
         return mat;
     }
 
@@ -259,21 +288,30 @@ public class MatrixMath {
                 for (int k = 0; k < matrix1.getNcols(); k++) {
                     sum += matrix1.getValueAt(i, k) * matrix2.getValueAt(k, j);
                 }
-                
+
                 if (sum > 0.99999999999999 && sum < 1.0) {
                     sum = 1.0;
                 }
-                
+
+                sum = MatrixMath.truncate(sum);
                 // -0.0 problem.
                 if (sum > -0.1 && sum < 0.0000000000000001) {
                     sum = 0.00;
-                } 
-                
+                }
+
                 //System.err.println("i " + i + " j " + j + " " + sum);
                 multipliedMatrix.setValueAt(i, j, sum);
             }
         }
         return multipliedMatrix;
+    }
+
+    private static double truncate(double x) {
+        if (x > 0) {
+            return Math.floor(x * 1000000000) / 1000000000;
+        } else {
+            return Math.ceil(x * 1000000000) / 1000000000;
+        }
     }
 
 }

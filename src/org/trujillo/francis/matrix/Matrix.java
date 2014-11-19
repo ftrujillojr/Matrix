@@ -25,7 +25,7 @@ public class Matrix {
         for (int ii = 0; ii < this.getNrows(); ii++) {
             strBuilder.append("| ");
             for (int jj = 0; jj < this.getNcols(); jj++) {
-                strBuilder.append(String.format("%9.5f ", this.getValueAt(ii, jj)));
+                strBuilder.append(String.format("%9.2f ", this.getValueAt(ii, jj)));
             }
             strBuilder.append("| \n");
         }

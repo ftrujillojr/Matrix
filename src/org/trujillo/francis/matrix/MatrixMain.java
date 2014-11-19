@@ -12,20 +12,18 @@ public class MatrixMain {
                 {-2, 4, 1},
                 {5, -2, 2},};
             Matrix matrix = new Matrix(dArray);
+            System.out.println("Original Matrix \n" + matrix.toString());
 
             Matrix idMat = MatrixMath.getIndentityMatrix(3);
-            System.out.println("INDENTITY Matrix \n" + idMat.toString());
+            System.out.println("INDENTITY of Matrix \n" + idMat.toString());
 
             System.out.println("====================================");
-            System.out.println("Original \n" + matrix.toString());
-
             double detOriginal = MatrixMath.determinant(matrix);
-
-            System.out.println("DET original => " + detOriginal);
+            System.out.println("DETERMINANT of original => " + detOriginal);
             System.out.println("====================================");
             
             Matrix invMatrix = MatrixMath.inverse(matrix);
-            System.out.println("INV Matrix \n" + invMatrix );
+            System.out.println("INV of Matrix \n" + invMatrix );
             System.out.println("====================================");
             
             Matrix resultMatrix = MatrixMath.multiply(matrix, invMatrix);
