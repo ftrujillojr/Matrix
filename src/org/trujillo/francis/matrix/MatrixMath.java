@@ -136,7 +136,7 @@ public class MatrixMath {
             //
             // (ad) - (bc)
             if (showWork) {
-                System.out.println("(ad) - (bc)\n");
+                //System.out.println("(ad) - (bc)\n");
             }
             double det = (matrix.getValueAt(0, 0) * matrix.getValueAt(1, 1)) - (matrix.getValueAt(0, 1) * matrix.getValueAt(1, 0));
             return (det);
