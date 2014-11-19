@@ -39,7 +39,7 @@ public class Matrix {
         for (int ii = 0; ii < this.getNrows(); ii++) {
             strBuilder.append("| ");
             for (int jj = 0; jj < this.getNcols(); jj++) {
-                if (this.scientificOut) {
+                if (scientificOut) {
                     strBuilder.append(String.format("%15s ", formatter.format(this.getValueAt(ii, jj))));
                 } else {
                     strBuilder.append(String.format("%10.5f ", this.getValueAt(ii, jj)));
@@ -59,7 +59,7 @@ public class Matrix {
             strBuilder.append(spacer);
             strBuilder.append("| ");
             for (int jj = 0; jj < this.getNcols(); jj++) {
-                if (this.scientificOut) {
+                if (scientificOut) {
                     strBuilder.append(String.format("%15s ", formatter.format(this.getValueAt(ii, jj))));
                 } else {
                     strBuilder.append(String.format("%10.5f ", this.getValueAt(ii, jj)));
