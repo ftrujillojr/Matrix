@@ -11,6 +11,7 @@ public class MatrixMain {
                 {1, -3, 0},
                 {-2, 4, 1},
                 {5, -2, 2},};
+            //MatrixMath.setShowWork();
             Matrix matrix = new Matrix(dArray);
             System.out.println("Original Matrix \n" + matrix.toString());
 
@@ -27,7 +28,6 @@ public class MatrixMain {
             System.out.println("====================================");
             
             Matrix resultMatrix = MatrixMath.multiply(matrix, invMatrix);
-            System.out.println("Original Matrix \n" + matrix.toString());
             System.out.println("SHOULD be EQUAL to IDENTITY matrix \n" + resultMatrix);
 
 

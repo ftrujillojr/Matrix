@@ -16,7 +16,7 @@ public class Matrix {
         this.nrows = nrow;
         this.ncols = ncol;
         // 2 dim array will default to 0.0 at every address.
-        data = new double[nrow][ncol];  
+        data = new double[nrow][ncol];
     }
 
     @Override
@@ -32,6 +32,30 @@ public class Matrix {
         return strBuilder.toString();
     }
 
+    public String toString(int width) {
+        String spacer = this.fill(" ", width, "");
+
+        StringBuilder strBuilder = new StringBuilder();
+        for (int ii = 0; ii < this.getNrows(); ii++) {
+            strBuilder.append(spacer);
+            strBuilder.append("| ");
+            for (int jj = 0; jj < this.getNcols(); jj++) {
+                strBuilder.append(String.format("%9.2f ", this.getValueAt(ii, jj)));
+            }
+            strBuilder.append("| \n");
+        }
+        return strBuilder.toString();
+    }
+
+    private String fill(String fillStr, int num, String myString) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < num - myString.length(); i++) {
+            sb.append(fillStr);
+        }
+        sb.append(myString);
+        return (sb.toString());
+    }
+
     public int getNrows() {
         return nrows;
     }
@@ -39,7 +63,6 @@ public class Matrix {
 //    public void setNrows(int nrows) {
 //        this.nrows = nrows;
 //    }
-
     public int getNcols() {
         return ncols;
     }
@@ -47,7 +70,6 @@ public class Matrix {
 //    public void setNcols(int ncols) {
 //        this.ncols = ncols;
 //    }
-
     public double[][] getValues() {
         return data;
     }
@@ -55,7 +77,6 @@ public class Matrix {
 //    public void setValues(double[][] values) {
 //        this.data = values;
 //    }
-
     public void setValueAt(int row, int col, double value) {
         data[row][col] = value;
     }
@@ -99,5 +120,4 @@ public class Matrix {
 //        }
 //        return mat;
 //    }
-
 }

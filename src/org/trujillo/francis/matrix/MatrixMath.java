@@ -303,6 +303,21 @@ public class MatrixMath {
                 multipliedMatrix.setValueAt(i, j, sum);
             }
         }
+        
+        if (showWork) {
+            String mat1Str = matrix1.toString();
+            String[] mat1Array = mat1Str.split("\n");
+            int widthMat1 = mat1Array[0].length();
+            System.out.println(matrix2.toString(widthMat1));
+            String multMat = multipliedMatrix.toString();
+            String[] multMatArray = multMat.split("\n");
+            for (int jj = 0; jj < mat1Array.length; jj++) {
+                String tmp = mat1Array[jj] + multMatArray[jj];
+                System.out.println(tmp);
+            }
+            System.out.println("\n");
+        }
+
         return multipliedMatrix;
     }
 
