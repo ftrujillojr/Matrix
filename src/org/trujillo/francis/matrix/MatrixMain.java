@@ -11,7 +11,9 @@ public class MatrixMain {
                 {1, -3, 0},
                 {-2, 4, 1},
                 {5, -2, 2},};
-            //MatrixMath.setShowWork();
+            MatrixMath.setShowWork();
+            
+            //Matrix.setScienticOut();
             Matrix matrix = new Matrix(dArray);
             System.out.println("Original Matrix \n" + matrix.toString());
 
