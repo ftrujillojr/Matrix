@@ -11,28 +11,29 @@ public class MatrixMain {
                 {1, -3, 0},
                 {-2, 4, 1},
                 {5, -2, 2},};
-            MatrixMath.setShowWork();
             
+            
+            MatrixMath.setShowWork();
             //Matrix.setScienticOut();
+            
             Matrix matrix = new Matrix(dArray);
-            System.out.println("Original Matrix \n" + matrix.toString());
-
-            Matrix idMat = MatrixMath.getIndentityMatrix(3);
-            System.out.println("INDENTITY of Matrix \n" + idMat.toString());
-
+            System.out.println("Matrix \n" + matrix.toString());
+            
             System.out.println("====================================");
             double detOriginal = MatrixMath.determinant(matrix);
-            System.out.println("DETERMINANT of original => " + detOriginal);
-            System.out.println("====================================");
+            System.out.println("DETERMINANT of Original Matrix => " + detOriginal);
+            System.out.println("====================================\n");
             //System.exit(99);
             
             Matrix invMatrix = MatrixMath.inverse(matrix);
-            System.out.println("INV of Matrix \n" + invMatrix );
-            System.out.println("====================================");
+            System.out.println("Inverse Matrix \n" + invMatrix.toString());
+            System.out.println("====================================\n");
             
-            Matrix resultMatrix = MatrixMath.multiply(matrix, invMatrix);
-            System.out.println("SHOULD be EQUAL to IDENTITY matrix \n" + resultMatrix);
 
+            System.out.println("Multiplying Original Matrix with the Inverse Matrix == IDENTITY Matrix\n");
+            Matrix resultMatrix = MatrixMath.multiply(matrix, invMatrix);
+            System.out.println("RESULT from multiply \n" + resultMatrix.toString());
+            System.out.println("====================================\n");
 
         } catch (NoSquareException ex) {
             Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);
