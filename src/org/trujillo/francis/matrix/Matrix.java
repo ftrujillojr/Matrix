@@ -102,11 +102,20 @@ public class Matrix {
         return strBuilder.toString();
     }
 
+    /**
+     * Take the current matrix  this.data and multiply by a constant.
+     * 
+     * This is the only non static math method and is chained.
+     * 
+     * @param constant
+     * @return Matrix
+     */
+    
     public Matrix scalarMultiplication(double constant) {
         Matrix mat = new Matrix(nrows, ncols);
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < ncols; j++) {
-                mat.setValueAt(i, j, data[i][j] * constant);
+                mat.setValueAt(i, j, this.data[i][j] * constant);
             }
         }
         return mat;
@@ -114,9 +123,10 @@ public class Matrix {
 
     /**
      * Transpose of a matrix - Swap the columns with rows
-     *
+     * http://en.wikipedia.org/wiki/Transpose
+     * 
      * @param matrix
-     * @return okay
+     * @return Matrix
      */
     public static Matrix transpose(Matrix matrix) {
         Matrix transposedMatrix = new Matrix(matrix.getNcols(), matrix.getNrows());
