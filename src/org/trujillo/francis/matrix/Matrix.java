@@ -33,7 +33,7 @@ public class Matrix {
      * @param fillStr
      * @param num
      * @param myString
-     * @return
+     * @return String
      */
     private String fill(String fillStr, int num, String myString) {
         StringBuilder sb = new StringBuilder();
@@ -45,13 +45,15 @@ public class Matrix {
     }
 
     /**
+     * <pre>
      * This value 1.999999999999999999 is truncated to 2.0 and this value
      * 4.00000000000023456 is truncated to 4.0
      *
      * The number of ZEROs gives us the precision. There seems to be a limit at
      * 9 digits with this method. This is good enough for now. TODO: find method
      * to 18 decimal places
-     *
+     * </pre>
+     * 
      * @param x
      * @return
      */
@@ -63,25 +65,23 @@ public class Matrix {
         }
     }
 
+    /**
+     * <pre>
+     * This allows the Matrix to be displayed similar to the way we would
+     * write it.
+     * </pre>
+     * @return 
+     */
     @Override
     public String toString() {
-        StringBuilder strBuilder = new StringBuilder();
-        NumberFormat formatter = new DecimalFormat("0.######E0");
-
-        for (int ii = 0; ii < this.getNrows(); ii++) {
-            strBuilder.append("| ");
-            for (int jj = 0; jj < this.getNcols(); jj++) {
-                if (scientificOut) {
-                    strBuilder.append(String.format("%15s ", formatter.format(this.getValueAt(ii, jj))));
-                } else {
-                    strBuilder.append(String.format("%12.5f ", this.getValueAt(ii, jj)));
-                }
-            }
-            strBuilder.append("| \n");
-        }
-        return strBuilder.toString();
+        return(this.toString(0));
     }
 
+    /**
+     * Allows Matrix to be displayed  "width"  shifted to the right.
+     * @param width
+     * @return 
+     */
     public String toString(int width) {
         String spacer = this.fill(" ", width, "");
         NumberFormat formatter = new DecimalFormat("0.######E0");
@@ -113,10 +113,20 @@ public class Matrix {
     
     public Matrix scalarMultiplication(double constant) {
         Matrix mat = new Matrix(nrows, ncols);
+        
+        if(showWork){
+            System.out.println("BEFORE Scalar Multiplcation by  => " + constant);
+            System.out.println(this.toString());
+        }
+        
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < ncols; j++) {
                 mat.setValueAt(i, j, this.data[i][j] * constant);
             }
+        }
+        if(showWork){
+            System.out.println("AFTER Scalar Multiplcation");
+            System.out.println(mat.toString());
         }
         return mat;
     }
@@ -142,13 +152,21 @@ public class Matrix {
     }
 
     /**
-     * Inverse of a matrix - A-1 * A = I where I is the identity matrix A matrix
-     * that have inverse is called non-singular or invertible. If the matrix
-     * does not have inverse it is called singular. For a singular matrix the
-     * values of the inverted matrix are either NAN or Infinity Only square
-     * matrices have inverse and the following method will throw exception if
-     * the matrix is not square.
-     *
+     * <pre>
+     * Inverse of a matrix 
+     *    A-1 * A = I where I is the identity matrix.
+     * 
+     * A matrix that have inverse is called non-singular or invertible. 
+     * 
+     * If the matrix does not have inverse it is called singular.
+     * 
+     * For a singular matrix the values of the inverted matrix are either NAN 
+     * or Infinity 
+     * 
+     * Only square matrices have inverse and the following method will throw exception if
+     * the matrix is not square or if there is NOT a solution or multiple solutions.
+     * 
+     * </pre>
      * @param matrix
      * @return
      * @throws NoSquareException
@@ -211,7 +229,7 @@ public class Matrix {
      *
      *
      * @param matrix
-     * @return okay
+     * @return double
      * @throws NoSquareException
      * @throws org.trujillo.francis.matrix.IllegalDimensionException
      */
@@ -222,7 +240,7 @@ public class Matrix {
         String callingMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (callingMethodName.equals("determinant") == false) {
             if (showWork) {
-                System.out.println("*** calling determinant  => from " + callingMethodName + "\n" + matrix.toString());
+                System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + "\n" + matrix.toString(15));
             }
         }
 
@@ -259,7 +277,7 @@ public class Matrix {
      * Determine the sign; i.e. even numbers have sign + and odds -
      *
      * @param i
-     * @return okay
+     * @return 1 or -1
      */
     private static int changeSign(int i) {
         if (i % 2 == 0) {
@@ -274,7 +292,7 @@ public class Matrix {
      * @param matrix
      * @param excluding_row
      * @param excluding_col
-     * @return
+     * @return Matrix
      * @throws org.trujillo.francis.matrix.IllegalDimensionException
      */
     public static Matrix createSubMatrix(Matrix matrix, int excluding_row, int excluding_col) throws IllegalDimensionException {
@@ -309,7 +327,7 @@ public class Matrix {
      * The cofactor of a matrix
      *
      * @param matrix
-     * @return
+     * @return Matrix
      * @throws NoSquareException
      * @throws org.trujillo.francis.matrix.IllegalDimensionException
      */
@@ -341,7 +359,7 @@ public class Matrix {
      *
      * @param matrix1
      * @param matrix2
-     * @return
+     * @return Matrix
      * @throws IllegalDimensionException
      */
     public static Matrix add(Matrix matrix1, Matrix matrix2) throws IllegalDimensionException {
@@ -364,7 +382,7 @@ public class Matrix {
      *
      * @param matrix1
      * @param matrix2
-     * @return
+     * @return Matrix
      * @throws IllegalDimensionException
      */
     public static Matrix subtract(Matrix matrix1, Matrix matrix2) throws IllegalDimensionException {
@@ -372,11 +390,13 @@ public class Matrix {
     }
 
     /**
-     * Multiply two matrices.
-     *
+     * Multiply two matrices.   
+     *   A*B != B*A       Not communitive
+     * http://en.wikipedia.org/wiki/Matrix_multiplication
+     * 
      * @param matrix1
      * @param matrix2
-     * @return
+     * @return Matrix
      */
     public static Matrix multiply(Matrix matrix1, Matrix matrix2) {
         Matrix multipliedMatrix = new Matrix(matrix1.getNrows(), matrix2.getNcols());
