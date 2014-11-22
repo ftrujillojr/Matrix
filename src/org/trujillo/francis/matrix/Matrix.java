@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 public class Matrix {
+
     private static boolean scientificOut = false;
 
     private int nrows;
@@ -27,10 +28,11 @@ public class Matrix {
      * <pre>
      * This is used for toString(int width) to position matrix.
      * </pre>
+     *
      * @param fillStr
      * @param num
      * @param myString
-     * @return 
+     * @return
      */
     private String fill(String fillStr, int num, String myString) {
         StringBuilder sb = new StringBuilder();
@@ -40,7 +42,26 @@ public class Matrix {
         sb.append(myString);
         return (sb.toString());
     }
-    
+
+    /**
+     * This value 1.999999999999999999 is truncated to 2.0 and this value
+     * 4.00000000000023456 is truncated to 4.0
+     *
+     * The number of ZEROs gives us the precision. There seems to be a limit at
+     * 9 digits with this method. This is good enough for now. TODO: find method
+     * to 18 decimal places
+     *
+     * @param x
+     * @return
+     */
+    private double truncate(double x) {
+        if (x > 0) {
+            return Math.floor(x * 1000000000) / 1000000000;
+        } else {
+            return Math.ceil(x * 1000000000) / 1000000000;
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder strBuilder = new StringBuilder();
@@ -52,7 +73,7 @@ public class Matrix {
                 if (scientificOut) {
                     strBuilder.append(String.format("%15s ", formatter.format(this.getValueAt(ii, jj))));
                 } else {
-                    strBuilder.append(String.format("%10.5f ", this.getValueAt(ii, jj)));
+                    strBuilder.append(String.format("%12.5f ", this.getValueAt(ii, jj)));
                 }
             }
             strBuilder.append("| \n");
@@ -72,7 +93,7 @@ public class Matrix {
                 if (scientificOut) {
                     strBuilder.append(String.format("%15s ", formatter.format(this.getValueAt(ii, jj))));
                 } else {
-                    strBuilder.append(String.format("%10.5f ", this.getValueAt(ii, jj)));
+                    strBuilder.append(String.format("%12.5f ", this.getValueAt(ii, jj)));
                 }
             }
             strBuilder.append("| \n");
@@ -89,7 +110,7 @@ public class Matrix {
         }
         return mat;
     }
-    
+
     public int getNrows() {
         return nrows;
     }
@@ -120,7 +141,7 @@ public class Matrix {
         }
         return -1;
     }
-    
+
     public static void setScienticOut() {
         scientificOut = true;
     }

@@ -135,10 +135,8 @@ public class MatrixMath {
             // | c  d |
             //
             // (ad) - (bc)
-            if (showWork) {
-                //System.out.println("(ad) - (bc)\n");
-            }
             double det = (matrix.getValueAt(0, 0) * matrix.getValueAt(1, 1)) - (matrix.getValueAt(0, 1) * matrix.getValueAt(1, 0));
+            det = MatrixMath.fixNegativeZero(det);
             return (det);
         }
 
@@ -146,13 +144,14 @@ public class MatrixMath {
         for (int i = 0; i < matrix.getNcols(); i++) {
             Matrix subMat = createSubMatrix(matrix, 0, i);
             double det = determinant(subMat);
-            double total = matrix.getValueAt(0, i) * det;
+            double total = MatrixMath.fixNegativeZero(matrix.getValueAt(0, i) * det);
 
             if (showWork) {
                 System.out.println("SUB MAT " + 0 + " " + i + " => " + matrix.getValueAt(0, i) + " mult by DET below  \n" + subMat + "DET " + det + " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
             }
             sum += changeSign(i) * total;
         }
+        sum = MatrixMath.fixNegativeZero(sum);
         return sum;
     }
 
@@ -289,21 +288,13 @@ public class MatrixMath {
                     sum += matrix1.getValueAt(i, k) * matrix2.getValueAt(k, j);
                 }
 
-                if (sum > 0.99999999999999 && sum < 1.0) {
-                    sum = 1.0;
-                }
-
-                sum = MatrixMath.truncate(sum);
-                // -0.0 problem.
-                if (sum > -0.1 && sum < 0.0000000000000001) {
-                    sum = 0.00;
-                }
+                sum = MatrixMath.fixNegativeZero(sum);
 
                 //System.err.println("i " + i + " j " + j + " " + sum);
                 multipliedMatrix.setValueAt(i, j, sum);
             }
         }
-        
+
         if (showWork) {
             String mat1Str = matrix1.toString();
             String[] mat1Array = mat1Str.split("\n");
@@ -321,12 +312,23 @@ public class MatrixMath {
         return multipliedMatrix;
     }
 
-    private static double truncate(double x) {
-        if (x > 0) {
-            return Math.floor(x * 1000000000) / 1000000000;
-        } else {
-            return Math.ceil(x * 1000000000) / 1000000000;
+    /**
+     * If you take  0.00 * -12.0  then you get  -0.00.
+     * This method fixes this.
+     * 
+     * http://en.wikipedia.org/wiki/Signed_zero
+     * 
+     * @param val
+     * @return 
+     */
+    private static double fixNegativeZero(double val) {
+        double returnValue = val;
+        // -0.0 problem.
+        if (returnValue > -0.1 && returnValue < 0.0000000000000001) {
+            returnValue = 0.00;
         }
+        return(returnValue);
     }
+
 
 }

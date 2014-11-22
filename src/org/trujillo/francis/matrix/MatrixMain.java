@@ -24,6 +24,7 @@ public class MatrixMain {
             double detOriginal = MatrixMath.determinant(matrix);
             System.out.println("DETERMINANT of original => " + detOriginal);
             System.out.println("====================================");
+            //System.exit(99);
             
             Matrix invMatrix = MatrixMath.inverse(matrix);
             System.out.println("INV of Matrix \n" + invMatrix );
