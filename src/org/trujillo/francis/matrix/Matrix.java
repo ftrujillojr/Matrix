@@ -23,14 +23,24 @@ public class Matrix {
         data = new double[nrow][ncol];
     }
 
-    public static void setScienticOut() {
-        scientificOut = true;
+    /**
+     * <pre>
+     * This is used for toString(int width) to position matrix.
+     * </pre>
+     * @param fillStr
+     * @param num
+     * @param myString
+     * @return 
+     */
+    private String fill(String fillStr, int num, String myString) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < num - myString.length(); i++) {
+            sb.append(fillStr);
+        }
+        sb.append(myString);
+        return (sb.toString());
     }
-
-    public static void clrScienticOut() {
-        scientificOut = false;
-    }
-
+    
     @Override
     public String toString() {
         StringBuilder strBuilder = new StringBuilder();
@@ -70,6 +80,16 @@ public class Matrix {
         return strBuilder.toString();
     }
 
+    public Matrix scalarMultiplication(double constant) {
+        Matrix mat = new Matrix(nrows, ncols);
+        for (int i = 0; i < nrows; i++) {
+            for (int j = 0; j < ncols; j++) {
+                mat.setValueAt(i, j, data[i][j] * constant);
+            }
+        }
+        return mat;
+    }
+    
     public int getNrows() {
         return nrows;
     }
@@ -100,38 +120,13 @@ public class Matrix {
         }
         return -1;
     }
-
-    public Matrix scalarMultiplication(double constant) {
-        Matrix mat = new Matrix(nrows, ncols);
-        for (int i = 0; i < nrows; i++) {
-            for (int j = 0; j < ncols; j++) {
-                mat.setValueAt(i, j, data[i][j] * constant);
-            }
-        }
-        return mat;
+    
+    public static void setScienticOut() {
+        scientificOut = true;
     }
 
-    private String fill(String fillStr, int num, String myString) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < num - myString.length(); i++) {
-            sb.append(fillStr);
-        }
-        sb.append(myString);
-        return (sb.toString());
+    public static void clrScienticOut() {
+        scientificOut = false;
     }
 
-//    public Matrix insertColumnWithValue1() {
-//        Matrix mat = new Matrix(this.getNrows(), this.getNcols() + 1);
-//        for (int i = 0; i < mat.getNrows(); i++) {
-//            for (int j = 0; j < mat.getNcols(); j++) {
-//                if (j == 0) {
-//                    mat.setValueAt(i, j, 1.0);
-//                } else {
-//                    mat.setValueAt(i, j, this.getValueAt(i, j - 1));
-//                }
-//
-//            }
-//        }
-//        return mat;
-//    }
 }
