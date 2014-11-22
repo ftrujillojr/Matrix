@@ -13,25 +13,25 @@ public class MatrixMain {
                 {5, -2, 2},};
             
             
-            MatrixMath.setShowWork();
+            Matrix.setShowWork();
             //Matrix.setScienticOut();
             
             Matrix matrix = new Matrix(dArray);
             System.out.println("Matrix \n" + matrix.toString());
             
             System.out.println("====================================");
-            double detOriginal = MatrixMath.determinant(matrix);
+            double detOriginal = Matrix.determinant(matrix);
             System.out.println("DETERMINANT of Original Matrix => " + detOriginal);
             System.out.println("====================================\n");
             //System.exit(99);
             
-            Matrix invMatrix = MatrixMath.inverse(matrix);
+            Matrix invMatrix = Matrix.inverse(matrix);
             System.out.println("Inverse Matrix \n" + invMatrix.toString());
             System.out.println("====================================\n");
             
 
             System.out.println("Multiplying Original Matrix with the Inverse Matrix == IDENTITY Matrix\n");
-            Matrix resultMatrix = MatrixMath.multiply(matrix, invMatrix);
+            Matrix resultMatrix = Matrix.multiply(matrix, invMatrix);
             System.out.println("RESULT from multiply \n" + resultMatrix.toString());
             System.out.println("====================================\n");
 
