@@ -492,6 +492,10 @@ public class Matrix {
     public static void setShowWork() {
         showWork = true;
     }
+    
+    public static boolean getShowWork() {
+        return showWork;
+    }
 
     public static void clrShowWork() {
         showWork = false;
