@@ -53,7 +53,7 @@ public class Matrix {
      * 9 digits with this method. This is good enough for now. TODO: find method
      * to 18 decimal places
      * </pre>
-     * 
+     *
      * @param x
      * @return
      */
@@ -70,17 +70,19 @@ public class Matrix {
      * This allows the Matrix to be displayed similar to the way we would
      * write it.
      * </pre>
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {
-        return(this.toString(0));
+        return (this.toString(0));
     }
 
     /**
-     * Allows Matrix to be displayed  "width"  shifted to the right.
+     * Allows Matrix to be displayed "width" shifted to the right.
+     *
      * @param width
-     * @return 
+     * @return
      */
     public String toString(int width) {
         String spacer = this.fill(" ", width, "");
@@ -103,28 +105,27 @@ public class Matrix {
     }
 
     /**
-     * Take the current matrix  this.data and multiply by a constant.
-     * 
+     * Take the current matrix this.data and multiply by a constant.
+     *
      * This is the only non static math method and is chained.
-     * 
+     *
      * @param constant
      * @return Matrix
      */
-    
     public Matrix scalarMultiplication(double constant) {
         Matrix mat = new Matrix(nrows, ncols);
-        
-        if(showWork){
+
+        if (showWork) {
             System.out.println("BEFORE Scalar Multiplcation by  => " + constant);
             System.out.println(this.toString());
         }
-        
+
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < ncols; j++) {
                 mat.setValueAt(i, j, this.data[i][j] * constant);
             }
         }
-        if(showWork){
+        if (showWork) {
             System.out.println("AFTER Scalar Multiplcation");
             System.out.println(mat.toString());
         }
@@ -134,7 +135,7 @@ public class Matrix {
     /**
      * Transpose of a matrix - Swap the columns with rows
      * http://en.wikipedia.org/wiki/Transpose
-     * 
+     *
      * @param matrix
      * @return Matrix
      */
@@ -153,20 +154,21 @@ public class Matrix {
 
     /**
      * <pre>
-     * Inverse of a matrix 
+     * Inverse of a matrix
      *    A-1 * A = I where I is the identity matrix.
-     * 
-     * A matrix that have inverse is called non-singular or invertible. 
-     * 
+     *
+     * A matrix that have inverse is called non-singular or invertible.
+     *
      * If the matrix does not have inverse it is called singular.
-     * 
-     * For a singular matrix the values of the inverted matrix are either NAN 
-     * or Infinity 
-     * 
+     *
+     * For a singular matrix the values of the inverted matrix are either NAN
+     * or Infinity
+     *
      * Only square matrices have inverse and the following method will throw exception if
      * the matrix is not square or if there is NOT a solution or multiple solutions.
-     * 
+     *
      * </pre>
+     *
      * @param matrix
      * @return
      * @throws NoSquareException
@@ -390,10 +392,9 @@ public class Matrix {
     }
 
     /**
-     * Multiply two matrices.   
-     *   A*B != B*A       Not communitive
+     * Multiply two matrices. A*B != B*A Not communitive
      * http://en.wikipedia.org/wiki/Matrix_multiplication
-     * 
+     *
      * @param matrix1
      * @param matrix2
      * @return Matrix
@@ -433,13 +434,12 @@ public class Matrix {
     }
 
     /**
-     * If you take  0.00 * -12.0  then you get  -0.00.
-     * This method fixes this.
-     * 
+     * If you take 0.00 * -12.0 then you get -0.00. This method fixes this.
+     *
      * http://en.wikipedia.org/wiki/Signed_zero
-     * 
+     *
      * @param val
-     * @return 
+     * @return
      */
     private static double fixNegativeZero(double val) {
         double returnValue = val;
@@ -447,9 +447,9 @@ public class Matrix {
         if (returnValue > -0.1 && returnValue < 0.0000000000000001) {
             returnValue = 0.00;
         }
-        return(returnValue);
+        return (returnValue);
     }
-    
+
     public int getNrows() {
         return nrows;
     }
@@ -492,13 +492,45 @@ public class Matrix {
     public static void setShowWork() {
         showWork = true;
     }
-    
+
     public static boolean getShowWork() {
         return showWork;
     }
 
     public static void clrShowWork() {
         showWork = false;
+    }
+
+    public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector, boolean debug) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException {
+        Matrix.clrShowWork();
+        System.out.println("Vector \n" + vector.toString());
+        System.out.println("Matrix \n\n" + matrix.toString());
+
+        if (debug) {
+            Matrix.setShowWork();
+            System.out.println("Since division is not defined for   Vector / Matrix we must use  Inverse Matrix and MULTIPLY\n");
+        }
+
+        Matrix invMatrix = Matrix.inverse(matrix);
+
+        if (debug) {
+            System.out.println("Inverse Matrix \n" + invMatrix.toString());
+        }
+
+        if (debug) {
+            System.out.println("(Verify INV Matrix is correct) Multiplying Original Matrix with the Inverse Matrix == IDENTITY Matrix\n");
+            Matrix resultMatrix = Matrix.multiply(matrix, invMatrix);
+            System.out.println("Multiply  Inverse Matrix by Vector to solve linear system of equations.");
+        }
+
+        Matrix resultSysOfEq = Matrix.multiply(invMatrix, vector);
+
+        if (debug) {
+            Matrix.clrShowWork();
+        }
+        System.out.println("Result for system of equations\n" + resultSysOfEq.toString());
+        System.out.println("===============================================================\n");
+        return (resultSysOfEq);
     }
 
 }
