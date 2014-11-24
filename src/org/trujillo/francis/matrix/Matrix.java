@@ -177,11 +177,11 @@ public class Matrix {
      */
     public static Matrix inverse(Matrix matrix) throws NoSquareException, IllegalDimensionException, NoSolutionOrMultipleSolutions {
         if (showWork) {
-            System.out.println("\n*** Calculating inverse() of Matrix\n" + matrix.toString());
+            System.out.println("\n*** Calculating inverse() of Matrix A\n" + matrix.toString());
         }
         double det = determinant(matrix);
         if (det == 0) {
-            String msg = "Matrix => return ZERO for determinant.  Has NO solution or multiple solutions.\n";
+            String msg = "Matrix A => returned ZERO for determinant.  Has NO solution or multiple solutions.\n";
             msg += matrix.toString();
             throw new NoSolutionOrMultipleSolutions(msg);
         }
@@ -245,9 +245,9 @@ public class Matrix {
         if (callingMethodName.equals("determinant") == false) {
             if (showWork) {
                 if (callingMethodName.equals("inverse")) {
-                    System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + " matrix by cofactor expansion\n");
+                    System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + " Matrix A by cofactor expansion of minors\n");
                 } else {
-                    System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + " matrix\n");
+                    System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + " Matrix A\n");
                 }
                 if (callingMethodName.equals("inverse") == false) {
                     System.out.println(matrix.toString(15));
@@ -272,11 +272,13 @@ public class Matrix {
         double sum = 0.0;
         for (int i = 0; i < matrix.getNcols(); i++) {
             Matrix subMat = createSubMatrix(matrix, 0, i);
+            if (showWork) {
+                System.out.println("\t\tValue from MATRIX " + 0 + " " + i + " => " + matrix.getValueAt(0, i) + " mult by DET of cofactor  \n" + subMat.toString(15));
+            }
             double det = determinant(subMat);
             double total = Matrix.fixNegativeZero(matrix.getValueAt(0, i) * det);
 
             if (showWork) {
-                System.out.println("\t\tValue from MATRIX " + 0 + " " + i + " => " + matrix.getValueAt(0, i) + " mult by DET of cofactor  \n" + subMat.toString(15));
                 System.out.println("\t\tDET " + det + " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
             }
             sum += changeSign(i) * total;
@@ -494,6 +496,21 @@ public class Matrix {
         return -1;
     }
 
+    /**
+     * <pre>
+     * The rank is defined as the largest square matrix that could fit inside
+     * this matrix.
+     * </pre>
+     * @return 
+     */
+    public int rank() {
+        if (nrows >= ncols) {
+            return ncols;
+        } else {
+            return nrows;
+        }
+    }
+
     public static void setScienticOut() {
         scientificOut = true;
     }
@@ -521,11 +538,15 @@ public class Matrix {
         if (showWork) {
             System.out.println("Division is not defined for a Matrix, so we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
         }
+        if (showWork == false) {
+            double detA = Matrix.determinant(matrix);
+            System.out.println("Determinant of A => " + detA + "\n");
+        }
 
         Matrix invMatrix = Matrix.inverse(matrix);
 
-        if (showWork) {
-            System.out.println("Inverse Matrix A\n" + invMatrix.toString());
+        if (showWork == false) {
+            System.out.println("Inverse Matrix A\n" + invMatrix.toString() + "\n");
         }
 
         if (showWork) {
