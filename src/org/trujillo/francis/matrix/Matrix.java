@@ -7,10 +7,12 @@ public class Matrix {
 
     private static boolean scientificOut = false;
     private static boolean showWork = false;
+    private static int level = 0;
 
     private int nrows;
     private int ncols;
     private double[][] data;
+    
 
     public Matrix(double[][] dat) {
         this.data = dat;
@@ -116,7 +118,7 @@ public class Matrix {
         Matrix mat = new Matrix(nrows, ncols);
 
         if (showWork) {
-            System.out.println("BEFORE Scalar Multiplcation by  => " + constant);
+            System.out.println("BEFORE Scalar Mult by  => " + constant);
             System.out.println(this.toString());
         }
 
@@ -126,7 +128,7 @@ public class Matrix {
             }
         }
         if (showWork) {
-            System.out.println("AFTER Scalar Multiplcation");
+            System.out.println("AFTER Scalar Mult");
             System.out.println(mat.toString());
         }
         return mat;
@@ -236,6 +238,9 @@ public class Matrix {
      * @throws org.trujillo.francis.matrix.IllegalDimensionException
      */
     public static double determinant(Matrix matrix) throws NoSquareException, IllegalDimensionException {
+        String indent = matrix.fill("        ", level++, "");
+        String lookAheadIndent = matrix.fill("        ", level, "");
+        
         if (!matrix.isSquare()) {
             throw new NoSquareException("ERROR: Matrix need to be square. \n" + matrix.toString());
         }
@@ -245,17 +250,20 @@ public class Matrix {
         if (callingMethodName.equals("determinant") == false) {
             if (showWork) {
                 if (callingMethodName.equals("inverse")) {
-                    System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + " Matrix A by cofactor expansion of minors\n");
+                    System.out.println(indent + "Calculating determinant for " + callingMethodName.toUpperCase() + " Matrix A by expansion of minors.");
                 } else {
-                    System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + " Matrix A\n");
+                    System.out.println(indent + "Calculating determinant for " + callingMethodName.toUpperCase() + " Matrix A\n");
                 }
+                System.out.println(indent + "Walking across top row, removing row/col. . .resulting in new Matrix.\n");
+                
                 if (callingMethodName.equals("inverse") == false) {
-                    System.out.println(matrix.toString(15));
+                    System.out.println(matrix.toString(8*level));
                 }
             }
         }
 
         if (matrix.size() == 1) {
+            level--;
             return matrix.getValueAt(0, 0);
         }
 
@@ -266,6 +274,7 @@ public class Matrix {
             // (ad) - (bc)
             double det = (matrix.getValueAt(0, 0) * matrix.getValueAt(1, 1)) - (matrix.getValueAt(0, 1) * matrix.getValueAt(1, 0));
             det = Matrix.fixNegativeZero(det);
+            level--;
             return (det);
         }
 
@@ -273,20 +282,22 @@ public class Matrix {
         for (int i = 0; i < matrix.getNcols(); i++) {
             Matrix subMat = createSubMatrix(matrix, 0, i);
             if (showWork) {
-                System.out.println("\t\tValue from MATRIX " + 0 + " " + i + " => " + matrix.getValueAt(0, i) + " mult by DET of cofactor  \n" + subMat.toString(15));
+                System.out.println(lookAheadIndent + "Value @ MATRIX [" + 0 + "][" + i + "] => " + matrix.getValueAt(0, i) + "\n");
+                System.out.println(subMat.toString(8*level));
             }
-            double det = determinant(subMat);
+            double det = determinant(subMat);  // RECURSIVE part..
             double total = Matrix.fixNegativeZero(matrix.getValueAt(0, i) * det);
 
             if (showWork) {
-                System.out.println("\t\tDET " + det + " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
+                System.out.println(lookAheadIndent + "DET " + det + " * " + matrix.getValueAt(0, i) + " => " + total + "  then, AFTER Change sign " + (changeSign(i) * total) + " \n");
             }
             sum += changeSign(i) * total;
         }
         sum = Matrix.fixNegativeZero(sum);
         if (showWork) {
-            System.out.println("\t\tSUM of the cofactor DET (above) => " + sum + "\n");
+            System.out.println(indent + "SUM of the cofactor DET (above) => " + sum + "\n");
         }
+        level--;
         return sum;
     }
 
@@ -356,18 +367,18 @@ public class Matrix {
             for (int j = 0; j < matrix.getNcols(); j++) {
                 double det = determinant(createSubMatrix(matrix, i, j));
                 double val = changeSign(i) * changeSign(j) * det;
-                if (showWork) {
-                    String changeSignI = (i % 2 == 0) ? "NO" : "YES";
-                    String changeSignJ = (j % 2 == 0) ? "NO" : "YES";
-                    System.out.println("\t\tDET of cofactor " + det + "  DET after sign change " + val + "    i,j: " + i + " " + j + " " + "ChangeSign: " + changeSignI + " " + changeSignJ + "\n");
-                }
+//                if (showWork) {
+//                    String changeSignI = (i % 2 == 0) ? "NO" : "YES";
+//                    String changeSignJ = (j % 2 == 0) ? "NO" : "YES";
+//                    System.out.println("DET of cofactor " + det + "  DET after sign change " + val + "    i,j: " + i + " " + j + " " + "ChangeSign: " + changeSignI + " " + changeSignJ + "\n");
+//                }
                 total += val;
                 mat.setValueAt(i, j, val);
             }
         }
-        if (showWork) {
-            System.out.println("COFACTOR with DET total => " + total + "\n" + mat.toString());
-        }
+//        if (showWork) {
+//            System.out.println("COFACTOR with DET total => " + total + "\n" + mat.toString());
+//        }
         return mat;
     }
 
@@ -536,11 +547,13 @@ public class Matrix {
         System.out.println("Matrix A\n\n" + matrix.toString());
 
         if (showWork) {
-            System.out.println("Division is not defined for a Matrix, so we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
-        }
-        if (showWork == false) {
+            clrShowWork();
             double detA = Matrix.determinant(matrix);
+            setShowWork();
             System.out.println("Determinant of A => " + detA + "\n");
+            
+            System.out.println("Division is not defined for a Matrix.");
+            System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
         }
 
         Matrix invMatrix = Matrix.inverse(matrix);
