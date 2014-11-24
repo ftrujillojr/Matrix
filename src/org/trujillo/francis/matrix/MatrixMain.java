@@ -8,21 +8,23 @@ public class MatrixMain {
     public static void main(String[] args) {
         try {
             double[][] mat = new double[][]{
-                {3, 2, -1},
-                {2, -2, 4},
-                {-1, 1.0 / 2.0, -1}
+                {3, 2, -1, 5},
+                {2, -2, 4, 2},
+                {-1, 1.0 / 2.0, -1, 0},
+                {1, 2, 3, 4},
             };
 
             double[][] vec = new double[][]{
                 {1},
                 {-2},
-                {0}
+                {0},
+                {-2}
             };
 
             Matrix matrix = new Matrix(mat);
             Matrix vector = new Matrix(vec);
 
-            Matrix.setShowWork();
+            //Matrix.setShowWork();
             Matrix resultSysEq = Matrix.solveSystemOfLinearEquations(matrix, vector);
             
             

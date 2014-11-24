@@ -240,9 +240,18 @@ public class Matrix {
             throw new NoSquareException("ERROR: Matrix need to be square. \n" + matrix.toString());
         }
         String callingMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+
+        // Do not display on recursive call.  Only on top level call.
         if (callingMethodName.equals("determinant") == false) {
             if (showWork) {
-                System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + "\n" + matrix.toString(15));
+                if (callingMethodName.equals("inverse")) {
+                    System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + " matrix by cofactor expansion\n");
+                } else {
+                    System.out.println("\t\tCalculating determinant for " + callingMethodName.toUpperCase() + " matrix\n");
+                }
+                if (callingMethodName.equals("inverse") == false) {
+                    System.out.println(matrix.toString(15));
+                }
             }
         }
 
@@ -267,11 +276,15 @@ public class Matrix {
             double total = Matrix.fixNegativeZero(matrix.getValueAt(0, i) * det);
 
             if (showWork) {
-                System.out.println("SUB MAT " + 0 + " " + i + " => " + matrix.getValueAt(0, i) + " mult by DET below  \n" + subMat + "DET " + det + " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
+                System.out.println("\t\tValue from MATRIX " + 0 + " " + i + " => " + matrix.getValueAt(0, i) + " mult by DET of cofactor  \n" + subMat.toString(15));
+                System.out.println("\t\tDET " + det + " = " + total + "  AFTER Change sign " + (changeSign(i) * total) + " \n");
             }
             sum += changeSign(i) * total;
         }
         sum = Matrix.fixNegativeZero(sum);
+        if (showWork) {
+            System.out.println("\t\tSUM of the cofactor DET (above) => " + sum + "\n");
+        }
         return sum;
     }
 
@@ -344,7 +357,7 @@ public class Matrix {
                 if (showWork) {
                     String changeSignI = (i % 2 == 0) ? "NO" : "YES";
                     String changeSignJ = (j % 2 == 0) ? "NO" : "YES";
-                    System.out.println("DET (cofactor) " + det + "  Value " + val + "    i,j: " + i + " " + j + " " + "ChangeSign: " + changeSignI + " " + changeSignJ + "\n");
+                    System.out.println("\t\tDET of cofactor " + det + "  DET after sign change " + val + "    i,j: " + i + " " + j + " " + "ChangeSign: " + changeSignI + " " + changeSignJ + "\n");
                 }
                 total += val;
                 mat.setValueAt(i, j, val);
@@ -504,22 +517,21 @@ public class Matrix {
     public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException {
         System.out.println("Vector B\n" + vector.toString());
         System.out.println("Matrix A\n\n" + matrix.toString());
-        
 
         if (showWork) {
-            System.out.println("Division is not defined for a Matrix, so we must use Inverse of Matrix A and MULTIPLY by Vector.  A^-1 * B\n");
+            System.out.println("Division is not defined for a Matrix, so we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
         }
 
         Matrix invMatrix = Matrix.inverse(matrix);
 
         if (showWork) {
-            System.out.println("Inverse Matrix \n" + invMatrix.toString());
+            System.out.println("Inverse Matrix A\n" + invMatrix.toString());
         }
 
         if (showWork) {
-            System.out.println("(Verify INV Matrix is correct) Multiplying Original Matrix with the Inverse Matrix == IDENTITY Matrix\n");
+            System.out.println("(Verify INV Matrix A is correct) Multiplying Matrix A with the Inverse Matrix A^-1 == IDENTITY Matrix\n");
             Matrix resultMatrix = Matrix.multiply(matrix, invMatrix);
-            System.out.println("Multiply  Inverse Matrix by Vector to solve linear system of equations.");
+            System.out.println("Multiply  Inverse Matrix A^-1 by Vector B to solve linear system of equations.");
         }
 
         Matrix resultSysOfEq = Matrix.multiply(invMatrix, vector);
