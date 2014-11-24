@@ -22,7 +22,8 @@ public class MatrixMain {
             Matrix matrix = new Matrix(mat);
             Matrix vector = new Matrix(vec);
 
-            Matrix resultSysEq = Matrix.solveSystemOfLinearEquations(matrix, vector, false);
+            Matrix.setShowWork();
+            Matrix resultSysEq = Matrix.solveSystemOfLinearEquations(matrix, vector);
             
             
             

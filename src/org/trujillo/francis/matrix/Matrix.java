@@ -177,7 +177,7 @@ public class Matrix {
      */
     public static Matrix inverse(Matrix matrix) throws NoSquareException, IllegalDimensionException, NoSolutionOrMultipleSolutions {
         if (showWork) {
-            System.out.println("\n*** Calculating inverse() of\n" + matrix.toString());
+            System.out.println("\n*** Calculating inverse() of Matrix\n" + matrix.toString());
         }
         double det = determinant(matrix);
         if (det == 0) {
@@ -501,23 +501,22 @@ public class Matrix {
         showWork = false;
     }
 
-    public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector, boolean debug) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException {
-        Matrix.clrShowWork();
-        System.out.println("Vector \n" + vector.toString());
-        System.out.println("Matrix \n\n" + matrix.toString());
+    public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException {
+        System.out.println("Vector B\n" + vector.toString());
+        System.out.println("Matrix A\n\n" + matrix.toString());
+        
 
-        if (debug) {
-            Matrix.setShowWork();
-            System.out.println("Since division is not defined for   Vector / Matrix we must use  Inverse Matrix and MULTIPLY\n");
+        if (showWork) {
+            System.out.println("Division is not defined for a Matrix, so we must use Inverse of Matrix A and MULTIPLY by Vector.  A^-1 * B\n");
         }
 
         Matrix invMatrix = Matrix.inverse(matrix);
 
-        if (debug) {
+        if (showWork) {
             System.out.println("Inverse Matrix \n" + invMatrix.toString());
         }
 
-        if (debug) {
+        if (showWork) {
             System.out.println("(Verify INV Matrix is correct) Multiplying Original Matrix with the Inverse Matrix == IDENTITY Matrix\n");
             Matrix resultMatrix = Matrix.multiply(matrix, invMatrix);
             System.out.println("Multiply  Inverse Matrix by Vector to solve linear system of equations.");
@@ -525,9 +524,6 @@ public class Matrix {
 
         Matrix resultSysOfEq = Matrix.multiply(invMatrix, vector);
 
-        if (debug) {
-            Matrix.clrShowWork();
-        }
         System.out.println("Result for system of equations\n" + resultSysOfEq.toString());
         System.out.println("===============================================================\n");
         return (resultSysOfEq);
