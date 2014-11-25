@@ -1,5 +1,7 @@
 package org.trujillo.francis.matrix;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -43,27 +45,6 @@ public class Matrix {
         }
         sb.append(myString);
         return (sb.toString());
-    }
-
-    /**
-     * <pre>
-     * This value 1.999999999999999999 is truncated to 2.0 and this value
-     * 4.00000000000023456 is truncated to 4.0
-     *
-     * The number of ZEROs gives us the precision. There seems to be a limit at
-     * 9 digits with this method. This is good enough for now. TODO: find method
-     * to 18 decimal places
-     * </pre>
-     *
-     * @param x
-     * @return
-     */
-    private double truncate(double x) {
-        if (x > 0) {
-            return Math.floor(x * 1000000000) / 1000000000;
-        } else {
-            return Math.ceil(x * 1000000000) / 1000000000;
-        }
     }
 
     /**
@@ -539,13 +520,22 @@ public class Matrix {
         showWork = false;
     }
 
-    public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException {
+    public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException, InverseMatrixIncorrectException {
         boolean savedShowWork = showWork;
 
         System.out.println("Vector B\n" + vector.toString());
         System.out.println("Matrix A\n\n" + matrix.toString());
 
+        if (!matrix.isSquare()) {
+            String msg = "Solving System of Linear Equations requires a SQUARE matrix.";
+            throw new NoSquareException(msg);
+        }
+
         clrShowWork();
+        Matrix identityMatrix = Matrix.getIndentityMatrix(matrix.ncols);
+//        System.out.println(identityMatrix.toString());
+//        System.exit(99);
+
         double detA = Matrix.determinant(matrix);
         if (savedShowWork) {
             setShowWork();
@@ -555,17 +545,66 @@ public class Matrix {
         System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
 
         Matrix invMatrix = Matrix.inverse(matrix);
-        setShowWork();
+
+        clrShowWork();
+        // This is just to verify that we calculated the invMatrix correctly.  Paranoid.
+        Matrix shouldBeIdentityMatrix = Matrix.multiply(matrix, invMatrix);
+        if (shouldBeIdentityMatrix.isEqualTo(identityMatrix) == false) {
+            String msg = "ERROR: Multiplying matrix and invMatrix should equal identity matrix.  PROGRAMMER ERROR\n";
+            msg += identityMatrix.toString();
+            msg += "\n";
+            msg += shouldBeIdentityMatrix.toString();
+            throw new InverseMatrixIncorrectException(msg);
+        }
+        if (savedShowWork) {
+            setShowWork();
+        }
 
         if (savedShowWork) {
             System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
         }
-        
+
+        setShowWork();
         Matrix resultSysOfEq = Matrix.multiply(invMatrix, vector);
         if (savedShowWork == false) {
             clrShowWork();
         }
         return (resultSysOfEq);
     }
+    
+    /**
+     * This method will be used mainly in Tests for expect results.
+     *
+     * @param matB
+     * @return
+     */
+    public boolean isEqualTo(Matrix matB) {
+        boolean bothEqual = true;
 
+        if ((this.nrows != matB.nrows) || (this.ncols != matB.ncols)) {
+            bothEqual = false;
+        } else {
+            for (int ii = 0; ii < this.nrows; ii++) {
+                for (int jj = 0; jj < this.ncols; jj++) {
+                    
+                    Double a = this.getValueAt(ii, jj);
+                    Double b = matB.getValueAt(ii, jj);
+                    a = BigDecimal.valueOf(a).setScale(-5, RoundingMode.HALF_UP).doubleValue();
+                    b = BigDecimal.valueOf(b).setScale(-5, RoundingMode.HALF_UP).doubleValue();
+
+                    if (a.equals(b) == false) {
+                        System.out.println("valueA " + a.toString());
+                        System.out.println("valueB " + b.toString());
+                        bothEqual = false;
+                        break;
+                    }
+                }
+                if (!bothEqual) {
+                    break;
+                }
+            }
+        }
+        return (bothEqual);
+    }
+    
 }

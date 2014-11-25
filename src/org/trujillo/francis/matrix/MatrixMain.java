@@ -24,7 +24,7 @@ public class MatrixMain {
             Matrix matrix = new Matrix(mat);
             Matrix vector = new Matrix(vec);
 
-            //Matrix.setShowWork();
+            Matrix.setShowWork();
             Matrix resultSysEq = Matrix.solveSystemOfLinearEquations(matrix, vector);
 
             double exp[][] = new double[][]{
@@ -42,6 +42,8 @@ public class MatrixMain {
         } catch (IllegalDimensionException ex) {
             Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSolutionOrMultipleSolutions ex) {
+            Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InverseMatrixIncorrectException ex) {
             Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
