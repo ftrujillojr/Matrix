@@ -12,7 +12,6 @@ public class Matrix {
     private int nrows;
     private int ncols;
     private double[][] data;
-    
 
     public Matrix(double[][] dat) {
         this.data = dat;
@@ -240,7 +239,7 @@ public class Matrix {
     public static double determinant(Matrix matrix) throws NoSquareException, IllegalDimensionException {
         String indent = matrix.fill("        ", level++, "");
         String lookAheadIndent = matrix.fill("        ", level, "");
-        
+
         if (!matrix.isSquare()) {
             throw new NoSquareException("ERROR: Matrix need to be square. \n" + matrix.toString());
         }
@@ -252,13 +251,10 @@ public class Matrix {
                 if (callingMethodName.equals("inverse")) {
                     System.out.println(indent + "Calculating determinant for " + callingMethodName.toUpperCase() + " Matrix A by expansion of minors.");
                 } else {
-                    System.out.println(indent + "Calculating determinant for " + callingMethodName.toUpperCase() + " Matrix A\n");
+                    System.out.println(indent + "Calculating determinant for " + callingMethodName.toUpperCase() + " Matrix A");
                 }
                 System.out.println(indent + "Walking across top row, removing row/col. . .resulting in new Matrix.\n");
-                
-                if (callingMethodName.equals("inverse") == false) {
-                    System.out.println(matrix.toString(8*level));
-                }
+                System.out.println(matrix.toString(8 * level));
             }
         }
 
@@ -283,7 +279,7 @@ public class Matrix {
             Matrix subMat = createSubMatrix(matrix, 0, i);
             if (showWork) {
                 System.out.println(lookAheadIndent + "Value @ MATRIX [" + 0 + "][" + i + "] => " + matrix.getValueAt(0, i) + "\n");
-                System.out.println(subMat.toString(8*level));
+                System.out.println(subMat.toString(8 * level));
             }
             double det = determinant(subMat);  // RECURSIVE part..
             double total = Matrix.fixNegativeZero(matrix.getValueAt(0, i) * det);
@@ -512,7 +508,8 @@ public class Matrix {
      * The rank is defined as the largest square matrix that could fit inside
      * this matrix.
      * </pre>
-     * @return 
+     *
+     * @return
      */
     public int rank() {
         if (nrows >= ncols) {
@@ -543,35 +540,31 @@ public class Matrix {
     }
 
     public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException {
+        boolean savedShowWork = showWork;
+
         System.out.println("Vector B\n" + vector.toString());
         System.out.println("Matrix A\n\n" + matrix.toString());
 
-        if (showWork) {
-            clrShowWork();
-            double detA = Matrix.determinant(matrix);
+        clrShowWork();
+        double detA = Matrix.determinant(matrix);
+        if (savedShowWork) {
             setShowWork();
-            System.out.println("Determinant of A => " + detA + "\n");
-            
-            System.out.println("Division is not defined for a Matrix.");
-            System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
         }
+        System.out.println("Determinant of A => " + detA + "\n");
+        System.out.println("Division is not defined for a Matrix.");
+        System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
 
         Matrix invMatrix = Matrix.inverse(matrix);
+        setShowWork();
 
-        if (showWork == false) {
-            System.out.println("Inverse Matrix A\n" + invMatrix.toString() + "\n");
+        if (savedShowWork) {
+            System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
         }
-
-        if (showWork) {
-            System.out.println("(Verify INV Matrix A is correct) Multiplying Matrix A with the Inverse Matrix A^-1 == IDENTITY Matrix\n");
-            Matrix resultMatrix = Matrix.multiply(matrix, invMatrix);
-            System.out.println("Multiply  Inverse Matrix A^-1 by Vector B to solve linear system of equations.");
-        }
-
+        
         Matrix resultSysOfEq = Matrix.multiply(invMatrix, vector);
-
-        System.out.println("Result for system of equations\n" + resultSysOfEq.toString());
-        System.out.println("===============================================================\n");
+        if (savedShowWork == false) {
+            clrShowWork();
+        }
         return (resultSysOfEq);
     }
 
