@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-public class Matrix {
+public final class Matrix {
 
     private static boolean scientificOut = false;
     private static boolean showWork = false;
@@ -26,92 +26,6 @@ public class Matrix {
         this.ncols = ncol;
         // 2 dim array will default to 0.0 at every address.
         data = new double[nrow][ncol];
-    }
-
-    /**
-     * <pre>
-     * This is used for toString(int width) to position matrix.
-     * </pre>
-     *
-     * @param fillStr
-     * @param num
-     * @param myString
-     * @return String
-     */
-    private String fill(String fillStr, int num, String myString) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < num - myString.length(); i++) {
-            sb.append(fillStr);
-        }
-        sb.append(myString);
-        return (sb.toString());
-    }
-
-    /**
-     * <pre>
-     * This allows the Matrix to be displayed similar to the way we would
-     * write it.
-     * </pre>
-     *
-     * @return
-     */
-    @Override
-    public String toString() {
-        return (this.toString(0));
-    }
-
-    /**
-     * Allows Matrix to be displayed "width" shifted to the right.
-     *
-     * @param width
-     * @return
-     */
-    public String toString(int width) {
-        String spacer = this.fill(" ", width, "");
-        NumberFormat formatter = new DecimalFormat("0.######E0");
-
-        StringBuilder strBuilder = new StringBuilder();
-        for (int ii = 0; ii < this.getNrows(); ii++) {
-            strBuilder.append(spacer);
-            strBuilder.append("| ");
-            for (int jj = 0; jj < this.getNcols(); jj++) {
-                if (scientificOut) {
-                    strBuilder.append(String.format("%15s ", formatter.format(this.getValueAt(ii, jj))));
-                } else {
-                    strBuilder.append(String.format("%12.5f ", this.getValueAt(ii, jj)));
-                }
-            }
-            strBuilder.append("| \n");
-        }
-        return strBuilder.toString();
-    }
-
-    /**
-     * Take the current matrix this.data and multiply by a constant.
-     *
-     * This is the only non static math method and is chained.
-     *
-     * @param constant
-     * @return Matrix
-     */
-    public Matrix scalarMultiplication(double constant) {
-        Matrix mat = new Matrix(nrows, ncols);
-
-        if (showWork) {
-            System.out.println("BEFORE Scalar Mult by  => " + constant);
-            System.out.println(this.toString());
-        }
-
-        for (int i = 0; i < nrows; i++) {
-            for (int j = 0; j < ncols; j++) {
-                mat.setValueAt(i, j, this.data[i][j] * constant);
-            }
-        }
-        if (showWork) {
-            System.out.println("AFTER Scalar Mult");
-            System.out.println(mat.toString());
-        }
-        return mat;
     }
 
     /**
@@ -224,6 +138,7 @@ public class Matrix {
         if (!matrix.isSquare()) {
             throw new NoSquareException("ERROR: Matrix need to be square. \n" + matrix.toString());
         }
+        
         String callingMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
 
         // Do not display on recursive call.  Only on top level call.
@@ -453,6 +368,137 @@ public class Matrix {
         return (returnValue);
     }
 
+
+    public static void setScienticOut() {
+        scientificOut = true;
+    }
+
+    public static void clrScienticOut() {
+        scientificOut = false;
+    }
+
+    public static void setShowWork() {
+        showWork = true;
+    }
+
+    public static boolean getShowWork() {
+        return showWork;
+    }
+
+    public static void clrShowWork() {
+        showWork = false;
+    }
+
+    public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException, InverseMatrixIncorrectException {
+        boolean savedShowWork = showWork;
+
+        System.out.println("Vector B\n" + vector.toString());
+        System.out.println("Matrix A\n\n" + matrix.toString());
+
+        if (!matrix.isSquare()) {
+            String msg = "Solving System of Linear Equations requires a SQUARE matrix.";
+            throw new NoSquareException(msg);
+        }
+
+        clrShowWork();
+        Matrix identityMatrix = Matrix.getIndentityMatrix(matrix.ncols);
+
+        double detA = Matrix.determinant(matrix);
+        if (savedShowWork) {
+            setShowWork();
+        }
+        System.out.println("Determinant of A => " + detA + "\n");
+        System.out.println("Division is not defined for a Matrix.");
+        System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
+
+        Matrix invMatrix = Matrix.inverse(matrix);
+
+        clrShowWork();
+        // This is just to verify that we calculated the invMatrix correctly.  Being paranoid.
+        Matrix shouldBeIdentityMatrix = Matrix.multiply(matrix, invMatrix);
+        if (shouldBeIdentityMatrix.isEqualTo(identityMatrix, 15) == false) {
+            String msg = "ERROR: Multiplying matrix and invMatrix should equal identity matrix.  PROGRAMMER ERROR\n";
+            msg += identityMatrix.toString();
+            msg += "\n";
+            msg += shouldBeIdentityMatrix.toString();
+            throw new InverseMatrixIncorrectException(msg);
+        }
+        if (savedShowWork) {
+            setShowWork();
+        }
+
+        if (savedShowWork) {
+            System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
+        }
+
+        setShowWork();
+        Matrix resultSysOfEq = Matrix.multiply(invMatrix, vector);
+        if (savedShowWork == false) {
+            clrShowWork();
+        }
+        return (resultSysOfEq);
+    }
+
+// ======================================================================================================
+    
+    /**
+     * This is set to default scale of 6. You may call isEqualTo(matrix, scale)
+     * to control scale.
+     *
+     * @param matB
+     * @return boolean
+     */
+    public boolean isEqualTo(Matrix matB) {
+        return (this.isEqualTo(matB, 6));
+    }
+
+    /**
+     * This method will be used mainly in Tests for expect results.
+     *
+     * @param matB
+     * @param scale
+     * @return boolean
+     */
+    public boolean isEqualTo(Matrix matB, int scale) {
+        boolean bothEqual = true;
+
+        if ((this.nrows != matB.nrows) || (this.ncols != matB.ncols)) {
+            bothEqual = false;
+        } else {
+            for (int ii = 0; ii < this.nrows; ii++) {
+                for (int jj = 0; jj < this.ncols; jj++) {
+                    Double a = this.roundHalfUp(this.getValueAt(ii, jj), 12);
+                    Double b = this.roundHalfUp(matB.getValueAt(ii, jj), 12);
+                    if (a.equals(b) == false) {
+                        System.out.println(String.format("ERROR:  a => %20.12f    b => %20.12f\n", a, b));
+                        bothEqual = false;
+                        break;
+                    }
+                }
+                if (!bothEqual) {
+                    break;
+                }
+            }
+        }
+        return (bothEqual);
+    }
+
+    /**
+     * Floating point arithmetic has rounding errors.
+     * This method sets a precision past the decimal and rounds up past .0000000000005
+     * if scale was 12.
+     * 
+     * My intent is to only use this on isEqualTo() method for comparison.
+     * 
+     * @param val
+     * @param scale
+     * @return 
+     */
+    private double roundHalfUp(double val, int scale) {
+        BigDecimal bdA = BigDecimal.valueOf(val).setScale(scale, RoundingMode.HALF_UP);
+        return (bdA.doubleValue());
+    }
+
     public int getNrows() {
         return nrows;
     }
@@ -499,111 +545,92 @@ public class Matrix {
             return nrows;
         }
     }
-
-    public static void setScienticOut() {
-        scientificOut = true;
-    }
-
-    public static void clrScienticOut() {
-        scientificOut = false;
-    }
-
-    public static void setShowWork() {
-        showWork = true;
-    }
-
-    public static boolean getShowWork() {
-        return showWork;
-    }
-
-    public static void clrShowWork() {
-        showWork = false;
-    }
-
-    public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException, InverseMatrixIncorrectException {
-        boolean savedShowWork = showWork;
-
-        System.out.println("Vector B\n" + vector.toString());
-        System.out.println("Matrix A\n\n" + matrix.toString());
-
-        if (!matrix.isSquare()) {
-            String msg = "Solving System of Linear Equations requires a SQUARE matrix.";
-            throw new NoSquareException(msg);
+    
+    /**
+     * <pre>
+     * This is used for toString(int width) to position matrix.
+     * </pre>
+     *
+     * @param fillStr
+     * @param num
+     * @param myString
+     * @return String
+     */
+    private String fill(String fillStr, int num, String myString) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < num - myString.length(); i++) {
+            sb.append(fillStr);
         }
-
-        clrShowWork();
-        Matrix identityMatrix = Matrix.getIndentityMatrix(matrix.ncols);
-//        System.out.println(identityMatrix.toString());
-//        System.exit(99);
-
-        double detA = Matrix.determinant(matrix);
-        if (savedShowWork) {
-            setShowWork();
-        }
-        System.out.println("Determinant of A => " + detA + "\n");
-        System.out.println("Division is not defined for a Matrix.");
-        System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
-
-        Matrix invMatrix = Matrix.inverse(matrix);
-
-        clrShowWork();
-        // This is just to verify that we calculated the invMatrix correctly.  Paranoid.
-        Matrix shouldBeIdentityMatrix = Matrix.multiply(matrix, invMatrix);
-        if (shouldBeIdentityMatrix.isEqualTo(identityMatrix) == false) {
-            String msg = "ERROR: Multiplying matrix and invMatrix should equal identity matrix.  PROGRAMMER ERROR\n";
-            msg += identityMatrix.toString();
-            msg += "\n";
-            msg += shouldBeIdentityMatrix.toString();
-            throw new InverseMatrixIncorrectException(msg);
-        }
-        if (savedShowWork) {
-            setShowWork();
-        }
-
-        if (savedShowWork) {
-            System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
-        }
-
-        setShowWork();
-        Matrix resultSysOfEq = Matrix.multiply(invMatrix, vector);
-        if (savedShowWork == false) {
-            clrShowWork();
-        }
-        return (resultSysOfEq);
+        sb.append(myString);
+        return (sb.toString());
     }
 
     /**
-     * This method will be used mainly in Tests for expect results.
+     * <pre>
+     * This allows the Matrix to be displayed similar to the way we would
+     * write it.
+     * </pre>
      *
-     * @param matB
      * @return
      */
-    public boolean isEqualTo(Matrix matB) {
-        boolean bothEqual = true;
-
-        if ((this.nrows != matB.nrows) || (this.ncols != matB.ncols)) {
-            bothEqual = false;
-        } else {
-            for (int ii = 0; ii < this.nrows; ii++) {
-                for (int jj = 0; jj < this.ncols; jj++) {
-                    Double a = this.getValueAt(ii, jj);
-                    Double b = matB.getValueAt(ii, jj);
-                    // This gets rid of rounding errors for comparason.
-                    BigDecimal bdA = BigDecimal.valueOf(a).setScale(5, RoundingMode.HALF_UP);
-                    BigDecimal bdB = BigDecimal.valueOf(b).setScale(5, RoundingMode.HALF_UP);
-                    if (bdA.equals(bdB) == false) {
-//                        System.out.println("bdA " + bdA.toString());
-//                        System.out.println("bdB " + bdB.toString() + "\n");
-                        bothEqual = false;
-                        break;
-                    }
-                }
-                if (!bothEqual) {
-                    break;
-                }
-            }
-        }
-        return (bothEqual);
+    @Override
+    public String toString() {
+        return (this.toString(0));
     }
 
+    /**
+     * Allows Matrix to be displayed "width" shifted to the right.
+     *
+     * @param width
+     * @return
+     */
+    public String toString(int width) {
+        String spacer = this.fill(" ", width, "");
+        NumberFormat formatter = new DecimalFormat("0.######E0");
+
+        StringBuilder strBuilder = new StringBuilder();
+        for (int ii = 0; ii < this.getNrows(); ii++) {
+            strBuilder.append(spacer);
+            strBuilder.append("| ");
+            for (int jj = 0; jj < this.getNcols(); jj++) {
+                if (scientificOut) {
+                    strBuilder.append(String.format("%15s ", formatter.format(this.getValueAt(ii, jj))));
+                } else {
+                    strBuilder.append(String.format("%12.5f ", this.getValueAt(ii, jj)));
+                }
+            }
+            strBuilder.append("| \n");
+        }
+        return strBuilder.toString();
+    }
+
+    /**
+     * Take the current matrix this.data and multiply by a constant.
+     *
+     * This is the only non static math method and is chained.
+     *
+     * @param constant
+     * @return Matrix
+     */
+    public Matrix scalarMultiplication(double constant) {
+        Matrix mat = new Matrix(nrows, ncols);
+
+        if (showWork) {
+            System.out.println("BEFORE Scalar Mult by  => " + constant);
+            System.out.println(this.toString());
+        }
+
+        for (int i = 0; i < nrows; i++) {
+            for (int j = 0; j < ncols; j++) {
+                mat.setValueAt(i, j, this.data[i][j] * constant);
+            }
+        }
+        if (showWork) {
+            System.out.println("AFTER Scalar Mult");
+            System.out.println(mat.toString());
+        }
+        return mat;
+    }
+
+    
 }
