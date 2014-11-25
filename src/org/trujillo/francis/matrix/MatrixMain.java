@@ -24,7 +24,7 @@ public class MatrixMain {
             Matrix matrix = new Matrix(mat);
             Matrix vector = new Matrix(vec);
 
-            Matrix.setShowWork();
+            //Matrix.setShowWork();
             Matrix resultSysEq = Matrix.solveSystemOfLinearEquations(matrix, vector);
 
             double exp[][] = new double[][]{

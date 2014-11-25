@@ -571,7 +571,7 @@ public class Matrix {
         }
         return (resultSysOfEq);
     }
-    
+
     /**
      * This method will be used mainly in Tests for expect results.
      *
@@ -586,15 +586,14 @@ public class Matrix {
         } else {
             for (int ii = 0; ii < this.nrows; ii++) {
                 for (int jj = 0; jj < this.ncols; jj++) {
-                    
                     Double a = this.getValueAt(ii, jj);
                     Double b = matB.getValueAt(ii, jj);
-                    a = BigDecimal.valueOf(a).setScale(-5, RoundingMode.HALF_UP).doubleValue();
-                    b = BigDecimal.valueOf(b).setScale(-5, RoundingMode.HALF_UP).doubleValue();
-
-                    if (a.equals(b) == false) {
-                        System.out.println("valueA " + a.toString());
-                        System.out.println("valueB " + b.toString());
+                    // This gets rid of rounding errors for comparason.
+                    BigDecimal bdA = BigDecimal.valueOf(a).setScale(5, RoundingMode.HALF_UP);
+                    BigDecimal bdB = BigDecimal.valueOf(b).setScale(5, RoundingMode.HALF_UP);
+                    if (bdA.equals(bdB) == false) {
+//                        System.out.println("bdA " + bdA.toString());
+//                        System.out.println("bdB " + bdB.toString() + "\n");
                         bothEqual = false;
                         break;
                     }
@@ -606,5 +605,5 @@ public class Matrix {
         }
         return (bothEqual);
     }
-    
+
 }
