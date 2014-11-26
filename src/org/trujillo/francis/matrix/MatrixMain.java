@@ -25,16 +25,10 @@ public class MatrixMain {
             Matrix vector = new Matrix(vec);
 
             //Matrix.setShowWork();
+            //Matrix.clrShowSomeWork();
             Matrix resultSysEq = Matrix.solveSystemOfLinearEquations(matrix, vector);
-
-            double exp[][] = new double[][]{
-                {0.63158},
-                {0.21053},
-                {-0.52632},
-                {-0.36842}
-            };
-            Matrix expectResults = new Matrix(exp);
             
+
             
             
         } catch (NoSquareException ex) {
