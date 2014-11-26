@@ -280,13 +280,29 @@ public class MatrixTest {
      */
     @Test
     public void testMultiply() {
-        Matrix matrix1 = null;
-        Matrix matrix2 = null;
-        Matrix expResult = null;
+        double[][] mat1 = {
+            {0, -1.2, 3.0},
+            {5.12, 5.0, 0},
+            {1, 4, -1}
+        };
+        double[][] mat2 = {
+            {2.0, 0.0, 5.0},
+            {-1.0, -0.5, -1.0},
+            {0.0, 0.0, 3.0}
+        };
+        Matrix matrix1 = new Matrix(mat1);
+        Matrix matrix2 = new Matrix(mat2);
+
+        double[][] exp = {
+            {1.2, 0.6, 10.2},
+            {5.24, -2.5, 20.6},
+            {-2.0, -2.0, -2.0}
+        };
+
+        Matrix expResult = new Matrix(exp);
         Matrix result = Matrix.multiply(matrix1, matrix2);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        this.displayResultExpectIfNotEqual(expResult, result, 5);
+        assertTrue(result.isEqualTo(expResult, 5));
     }
 
     /**
@@ -296,42 +312,34 @@ public class MatrixTest {
      */
     @Test
     public void testSolveSystemOfLinearEquations() throws Exception {
-        Matrix matrix = null;
-        Matrix vector = null;
-        Matrix expResult = null;
+        double[][] mat = new double[][]{
+            {3, 2, -1, 5},
+            {2, -2, 4, 2},
+            {-1, 1.0 / 2.0, -1, 0},
+            {1, 2, 3, 4},};
+
+        double[][] vec = new double[][]{
+            {1},
+            {-2},
+            {0},
+            {-2}
+        };
+
+        Matrix matrix = new Matrix(mat);
+        Matrix vector = new Matrix(vec);
+
+        //Matrix.setShowWork();
+        double exp[][] = new double[][]{
+            {0.63158},
+            {0.21053},
+            {-0.52632},
+            {-0.36842}
+        };
+        Matrix expResult = new Matrix(exp);
+        Matrix.clrShowSomeWork();
         Matrix result = Matrix.solveSystemOfLinearEquations(matrix, vector);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of isEqualTo method, of class Matrix.
-     */
-    @Test
-    public void testIsEqualTo_Matrix() {
-        Matrix matB = null;
-        Matrix instance = null;
-        boolean expResult = false;
-        boolean result = instance.isEqualTo(matB);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of isEqualTo method, of class Matrix.
-     */
-    @Test
-    public void testIsEqualTo_Matrix_int() {
-        Matrix matB = null;
-        int scale = 0;
-        Matrix instance = null;
-        boolean expResult = false;
-        boolean result = instance.isEqualTo(matB, scale);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        this.displayResultExpectIfNotEqual(expResult, result, 5);
+        assertTrue(result.isEqualTo(expResult, 5));
     }
 
     /**
@@ -339,13 +347,22 @@ public class MatrixTest {
      */
     @Test
     public void testScalarMultiplication() {
-        double constant = 0.0;
-        Matrix instance = null;
-        Matrix expResult = null;
-        Matrix result = instance.scalarMultiplication(constant);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        double constant = -0.1;
+        double[][] mat = {
+            {0, -1.2, 3.0},
+            {5.12, 5.0, 0},
+            {1, 4, -1}
+        };
+        Matrix matrix = new Matrix(mat);
+        double exp[][] = new double[][]{
+            {0.0, 0.12, -0.3},
+            {-0.512, -0.5, 0.0},
+            {-0.1, -0.4, 0.1}
+        };
+        Matrix expResult = new Matrix(exp);
+        Matrix result = matrix.scalarMultiplication(constant);
+        this.displayResultExpectIfNotEqual(expResult, result, 5);
+        assertTrue(result.isEqualTo(expResult, 5));
     }
 
     /**

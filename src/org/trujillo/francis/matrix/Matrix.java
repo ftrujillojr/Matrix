@@ -9,6 +9,7 @@ public final class Matrix {
 
     private static boolean scientificOut = false;
     private static boolean showWork = false;
+    private static boolean showSomeWork = true;
     private static int level = 0;
 
     private int nrows;
@@ -138,7 +139,7 @@ public final class Matrix {
         if (!matrix.isSquare()) {
             throw new NoSquareException("ERROR: Matrix need to be square. \n" + matrix.toString());
         }
-        
+
         String callingMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
 
         // Do not display on recursive call.  Only on top level call.
@@ -368,7 +369,6 @@ public final class Matrix {
         return (returnValue);
     }
 
-
     public static void setScienticOut() {
         scientificOut = true;
     }
@@ -381,6 +381,10 @@ public final class Matrix {
         showWork = true;
     }
 
+    public static void setShowSomeWork() {
+        showSomeWork = true;
+    }
+
     public static boolean getShowWork() {
         return showWork;
     }
@@ -389,11 +393,17 @@ public final class Matrix {
         showWork = false;
     }
 
+    public static void clrShowSomeWork() {
+        showSomeWork = false;
+    }
+
     public static Matrix solveSystemOfLinearEquations(Matrix matrix, Matrix vector) throws NoSquareException, NoSolutionOrMultipleSolutions, IllegalDimensionException, InverseMatrixIncorrectException {
         boolean savedShowWork = showWork;
 
-        System.out.println("Vector B\n" + vector.toString());
-        System.out.println("Matrix A\n\n" + matrix.toString());
+        if (showSomeWork | showWork) {
+            System.out.println("Vector B\n" + vector.toString());
+            System.out.println("Matrix A\n\n" + matrix.toString());
+        }
 
         if (!matrix.isSquare()) {
             String msg = "Solving System of Linear Equations requires a SQUARE matrix.";
@@ -407,16 +417,17 @@ public final class Matrix {
         if (savedShowWork) {
             setShowWork();
         }
-        System.out.println("Determinant of A => " + detA + "\n");
-        System.out.println("Division is not defined for a Matrix.");
-        System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
-
+        if (showSomeWork | showWork) {
+            System.out.println("Determinant of A => " + detA + "\n");
+            System.out.println("Division is not defined for a Matrix.");
+            System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
+        }
         Matrix invMatrix = Matrix.inverse(matrix);
 
         clrShowWork();
         // This is just to verify that we calculated the invMatrix correctly.  Being paranoid.
         Matrix shouldBeIdentityMatrix = Matrix.multiply(matrix, invMatrix);
-        if (shouldBeIdentityMatrix.isEqualTo(identityMatrix, 15) == false) {
+        if (shouldBeIdentityMatrix.isEqualTo(identityMatrix, 5) == false) {
             String msg = "ERROR: Multiplying matrix and invMatrix should equal identity matrix.  PROGRAMMER ERROR\n";
             msg += identityMatrix.toString();
             msg += "\n";
@@ -431,7 +442,9 @@ public final class Matrix {
             System.out.println("So, we must use Inverse of Matrix A and MULTIPLY by Vector B.  A^-1 * B\n");
         }
 
-        setShowWork();
+        if (showSomeWork) {
+            setShowWork();
+        }
         Matrix resultSysOfEq = Matrix.multiply(invMatrix, vector);
         if (savedShowWork == false) {
             clrShowWork();
@@ -440,7 +453,6 @@ public final class Matrix {
     }
 
 // ======================================================================================================
-    
     /**
      * This is set to default scale of 6. You may call isEqualTo(matrix, scale)
      * to control scale.
@@ -484,15 +496,15 @@ public final class Matrix {
     }
 
     /**
-     * Floating point arithmetic has rounding errors.
-     * This method sets a precision past the decimal and rounds up past .0000000000005
-     * if scale was 12.
-     * 
+     * Floating point arithmetic has rounding errors. This method sets a
+     * precision past the decimal and rounds up past .0000000000005 if scale was
+     * 12.
+     *
      * My intent is to only use this on isEqualTo() method for comparison.
-     * 
+     *
      * @param val
      * @param scale
-     * @return 
+     * @return
      */
     public double roundHalfUp(double val, int scale) {
         BigDecimal bdA = BigDecimal.valueOf(val).setScale(scale, RoundingMode.HALF_UP);
@@ -545,7 +557,7 @@ public final class Matrix {
             return nrows;
         }
     }
-    
+
     /**
      * <pre>
      * This is used for toString(int width) to position matrix.
@@ -632,5 +644,4 @@ public final class Matrix {
         return mat;
     }
 
-    
 }
