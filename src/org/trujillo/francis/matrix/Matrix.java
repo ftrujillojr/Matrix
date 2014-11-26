@@ -622,7 +622,7 @@ public final class Matrix {
 
         for (int i = 0; i < nrows; i++) {
             for (int j = 0; j < ncols; j++) {
-                mat.setValueAt(i, j, this.data[i][j] * constant);
+                mat.setValueAt(i, j, Matrix.fixNegativeZero(this.data[i][j]) * constant);
             }
         }
         if (showWork) {

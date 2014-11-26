@@ -167,33 +167,50 @@ public class MatrixTest {
         };
         Matrix matrix = new Matrix(mat);
 
-        int excluding_row = 0;
-        int excluding_col = 0;
-
         double[][] exp = {
             {5.0, 0.0},
             {4.0, -1.0}
         };
-
         Matrix expResult = new Matrix(exp);
-        Matrix result = Matrix.createSubMatrix(matrix, excluding_row, excluding_col);
+
+        Matrix result = Matrix.createSubMatrix(matrix, 0, 0);
         this.displayResultExpectIfNotEqual(expResult, result, 5);
         assertTrue(result.isEqualTo(expResult, 5));
+
+        double[][] exp2 = {
+            {5.12, 0.0},
+            {1.0, -1.0}
+        };
+        Matrix expResult2 = new Matrix(exp2);
+
+        Matrix result2 = Matrix.createSubMatrix(matrix, 0, 1);
+        this.displayResultExpectIfNotEqual(expResult2, result2, 5);
+        assertTrue(result2.isEqualTo(expResult2, 5));
     }
 
     /**
      * Test of cofactor method, of class Matrix.
+     * http://www.mathwords.com/c/cofactor_matrix.htm
      *
      * @throws java.lang.Exception
      */
     @Test
     public void testCofactor() throws Exception {
-        Matrix matrix = null;
-        Matrix expResult = null;
+        double[][] mat = {
+            {1, 2, 3},
+            {0, 4, 5},
+            {1, 0, 6}
+        };
+        Matrix matrix = new Matrix(mat);
+
+        double[][] exp = {
+            {24, 5, -4},
+            {-12, 3, 2},
+            {-2, -5, 4},};
+        Matrix expResult = new Matrix(exp);
         Matrix result = Matrix.cofactor(matrix);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        this.displayResultExpectIfNotEqual(expResult, result, 5);
+        assertTrue(result.isEqualTo(expResult, 5));
     }
 
     /**
@@ -203,13 +220,28 @@ public class MatrixTest {
      */
     @Test
     public void testAdd() throws Exception {
-        Matrix matrix1 = null;
-        Matrix matrix2 = null;
-        Matrix expResult = null;
+        double[][] mat1 = {
+            {0, -1.2, 3.0},
+            {5.12, 5.0, 0},
+            {1, 4, -1}
+        };
+        double[][] mat2 = {
+            {2.0, 0.0, 5.0},
+            {-1.0, -0.5, -1.0},
+            {0.0, 0.0, 3.0}
+        };
+        Matrix matrix1 = new Matrix(mat1);
+        Matrix matrix2 = new Matrix(mat2);
+
+        double[][] exp = {
+            {2.0, -1.2, 8.0},
+            {4.12, 4.5, -1.0},
+            {1.0, 4.0, 2.0}
+        };
+        Matrix expResult = new Matrix(exp);
         Matrix result = Matrix.add(matrix1, matrix2);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        this.displayResultExpectIfNotEqual(expResult, result, 5);
+        assertTrue(result.isEqualTo(expResult, 5));
     }
 
     /**
@@ -219,13 +251,28 @@ public class MatrixTest {
      */
     @Test
     public void testSubtract() throws Exception {
-        Matrix matrix1 = null;
-        Matrix matrix2 = null;
-        Matrix expResult = null;
+        double[][] mat1 = {
+            {0, -1.2, 3.0},
+            {5.12, 5.0, 0},
+            {1, 4, -1}
+        };
+        double[][] mat2 = {
+            {2.0, 0.0, 5.0},
+            {-1.0, -0.5, -1.0},
+            {0.0, 0.0, 3.0}
+        };
+        Matrix matrix1 = new Matrix(mat1);
+        Matrix matrix2 = new Matrix(mat2);
+
+        double[][] exp = {
+            {-2.0, -1.2, -2.0},
+            {6.12, 5.5, 1.0},
+            {1.0, 4.0, -4.0}
+        };
+        Matrix expResult = new Matrix(exp);
         Matrix result = Matrix.subtract(matrix1, matrix2);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        this.displayResultExpectIfNotEqual(expResult, result, 5);
+        assertTrue(result.isEqualTo(expResult, 5));
     }
 
     /**
