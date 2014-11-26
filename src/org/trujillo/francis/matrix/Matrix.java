@@ -494,7 +494,7 @@ public final class Matrix {
      * @param scale
      * @return 
      */
-    private double roundHalfUp(double val, int scale) {
+    public double roundHalfUp(double val, int scale) {
         BigDecimal bdA = BigDecimal.valueOf(val).setScale(scale, RoundingMode.HALF_UP);
         return (bdA.doubleValue());
     }

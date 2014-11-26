@@ -114,13 +114,12 @@ public class MatrixTest {
             {1.0, 0.0, 0.0, 0.0},
             {0.0, 1.0, 0.0, 0.0},
             {0.0, 0.0, 1.0, 0.0},
-            {0.0, 0.0, 0.0, 1.0},
-        };
+            {0.0, 0.0, 0.0, 1.0},};
         Matrix expResult4 = new Matrix(exp4);
         Matrix result4 = Matrix.getIndentityMatrix(4);
         this.displayResultExpectIfNotEqual(expResult4, result4, 5);
         assertTrue(result4.isEqualTo(expResult4, 5));
-        
+
         double[][] exp2 = {
             {1.0, 0.0},
             {0.0, 1.0}
@@ -138,12 +137,20 @@ public class MatrixTest {
      */
     @Test
     public void testDeterminant() throws Exception {
-        Matrix matrix = null;
-        double expResult = 0.0;
-        double result = Matrix.determinant(matrix);
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        double[][] mat = {
+            {0, -1.2, 3.0},
+            {5.12, 5.0, 0},
+            {1, 4, -1}
+        };
+        Matrix matrix = new Matrix(mat);
+
+        Double expResult = matrix.roundHalfUp(40.29599, 3);
+        Double result = matrix.roundHalfUp(Matrix.determinant(matrix), 3);
+
+        if (expResult.equals(result) == false) {
+            System.out.println("EXPECT => " + expResult.doubleValue());
+            System.out.println("RESULT => " + result.doubleValue());
+        }
     }
 
     /**
@@ -153,14 +160,25 @@ public class MatrixTest {
      */
     @Test
     public void testCreateSubMatrix() throws Exception {
-        Matrix matrix = null;
+        double[][] mat = {
+            {0, -1.2, 3.0},
+            {5.12, 5.0, 0},
+            {1, 4, -1}
+        };
+        Matrix matrix = new Matrix(mat);
+
         int excluding_row = 0;
         int excluding_col = 0;
-        Matrix expResult = null;
+
+        double[][] exp = {
+            {5.0, 0.0},
+            {4.0, -1.0}
+        };
+
+        Matrix expResult = new Matrix(exp);
         Matrix result = Matrix.createSubMatrix(matrix, excluding_row, excluding_col);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        this.displayResultExpectIfNotEqual(expResult, result, 5);
+        assertTrue(result.isEqualTo(expResult, 5));
     }
 
     /**
