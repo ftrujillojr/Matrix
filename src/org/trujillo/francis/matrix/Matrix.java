@@ -467,8 +467,8 @@ public final class Matrix {
         } else {
             for (int ii = 0; ii < this.nrows; ii++) {
                 for (int jj = 0; jj < this.ncols; jj++) {
-                    Double a = this.roundHalfUp(this.getValueAt(ii, jj), 12);
-                    Double b = this.roundHalfUp(matB.getValueAt(ii, jj), 12);
+                    Double a = this.roundHalfUp(this.getValueAt(ii, jj), scale);
+                    Double b = this.roundHalfUp(matB.getValueAt(ii, jj), scale);
                     if (a.equals(b) == false) {
                         System.out.println(String.format("ERROR:  a => %20.12f    b => %20.12f\n", a, b));
                         bothEqual = false;
