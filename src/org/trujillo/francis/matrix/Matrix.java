@@ -401,6 +401,8 @@ public final class Matrix {
         boolean savedShowWork = showWork;
 
         if (showSomeWork | showWork) {
+            String banner = matrix.fill("=", 100, "");
+            System.out.println(banner + "\n");
             System.out.println("Vector B\n" + vector.toString());
             System.out.println("Matrix A\n\n" + matrix.toString());
         }
@@ -450,6 +452,32 @@ public final class Matrix {
             clrShowWork();
         }
         return (resultSysOfEq);
+    }
+
+    public static double calculateAreaOfTriangleUsing3CoordinateMatrix(Matrix coordinateMatrix) throws NoSquareException, IllegalDimensionException {
+        Matrix areaTriangleMatrix = coordinateMatrix.appendColumnWithValue1();
+
+        if (showSomeWork | showWork) {
+            String banner = coordinateMatrix.fill("=", 100, "");
+            System.out.println(banner + "\n");
+            System.out.println("Coordinates of triangle\n" + coordinateMatrix.toString());
+        }
+
+        if (showWork) {
+            System.out.println("Create new matrix adding a column with ones \n" + areaTriangleMatrix.toString(8));
+        }
+
+        double det = Matrix.determinant(areaTriangleMatrix);
+        if (showWork) {
+            System.out.println("Find DET => " + det);
+        }
+
+        double area = Math.abs(0.5 * det);
+        if (showSomeWork | showWork) {
+            System.out.println("AREA of triangle is   +/-  1/2 * det => " + area + "  units^2    (always positive units)\n");
+        }
+
+        return (area);
     }
 
 // ======================================================================================================
@@ -640,6 +668,36 @@ public final class Matrix {
         if (showWork) {
             System.out.println("AFTER Scalar Mult");
             System.out.println(mat.toString());
+        }
+        return mat;
+    }
+
+    public Matrix insertColumnWithValue1() {
+        Matrix mat = new Matrix(this.getNrows(), this.getNcols() + 1);
+        for (int i = 0; i < mat.getNrows(); i++) {
+            for (int j = 0; j < mat.getNcols(); j++) {
+                if (j == 0) {
+                    mat.setValueAt(i, j, 1.0);
+                } else {
+                    mat.setValueAt(i, j, this.getValueAt(i, j - 1));
+                }
+
+            }
+        }
+        return mat;
+    }
+
+    public Matrix appendColumnWithValue1() {
+        Matrix mat = new Matrix(this.getNrows(), this.getNcols() + 1);
+        for (int i = 0; i < mat.getNrows(); i++) {
+            for (int j = 0; j < mat.getNcols(); j++) {
+                if (j == (mat.getNcols() - 1)) {
+                    mat.setValueAt(i, j, 1.0);
+                } else {
+                    mat.setValueAt(i, j, this.getValueAt(i, j));
+                }
+
+            }
         }
         return mat;
     }
