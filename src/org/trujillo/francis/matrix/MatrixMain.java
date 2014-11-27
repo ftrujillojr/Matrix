@@ -12,13 +12,18 @@ public class MatrixMain {
                 {3, 2, -1, 5},
                 {2, -2, 4, 2},
                 {-1, 1.0 / 2.0, -1, 0},
-                {1, 2, 3, 4},};
+                {1, 2, 3, 4}
+            //                {1, 5},
+            //                {1, -2}
+            };
 
             double[][] vec = new double[][]{
                 {1},
                 {-2},
                 {0},
                 {-2}
+//                {7},
+//                {-2}
             };
 
             Matrix matrix = new Matrix(mat);
@@ -27,10 +32,7 @@ public class MatrixMain {
             //Matrix.setShowWork();
             //Matrix.clrShowSomeWork();
             Matrix resultSysEq = Matrix.solveSystemOfLinearEquations(matrix, vector);
-            
 
-            
-            
         } catch (NoSquareException ex) {
             Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalDimensionException ex) {
