@@ -32,20 +32,23 @@ public class MatrixMain {
             //Matrix.setShowWork();
             //Matrix.clrShowSomeWork();
             Matrix resultSysEq = Matrix.solveSystemOfLinearEquations(matrix, vector);
-            
+
 // ==============================================================================================
-            
             double[][] coords = {
                 {-5, 2},
                 {4, 3},
-                {5,-2}
+                {5, -2}
             };
-            
+
             Matrix coordinateMatrix = new Matrix(coords);
-            
+
             Matrix.setShowWork();
             double area = Matrix.calculateAreaOfTriangleUsing3CoordinateMatrix(coordinateMatrix);
+
+// ==============================================================================================
             
+            Matrix.clrShowWork();
+            System.out.println("matrix^2\n"+ Matrix.powerOfSquareMatrix(matrix, 2));
 
         } catch (NoSquareException ex) {
             Logger.getLogger(MatrixMain.class.getName()).log(Level.SEVERE, null, ex);

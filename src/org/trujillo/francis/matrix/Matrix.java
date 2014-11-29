@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+// http://onsolver.com/matrix.php
 public final class Matrix {
 
     private static boolean scientificOut = false;
@@ -29,6 +30,23 @@ public final class Matrix {
         data = new double[nrow][ncol];
     }
 
+    // http://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0CB4QFjAA&url=http%3A%2F%2Fstackoverflow.com%2Fquestions%2F22900872%2Fraising-a-matrix-to-the-power-method-java&ei=WdB4VPvLDs3SoASOs4C4Ag&usg=AFQjCNERIkyfAVz1U-wCIrYyRL5FxgsWYQ&sig2=q6s4-3u-6Uf0-h2Bb9Rw3A
+    // raise b to the n, n >= 0
+    public static Matrix powerOfSquareMatrix(Matrix b, int n) throws NoSquareException {
+        if (!b.isSquare()) {
+            throw new NoSquareException("ERROR: Matrix need to be square. \n" + b.toString());
+        }
+        if (n == 0) {
+            return Matrix.getIndentityMatrix(b.size()); // b to the 0 is 1
+        }
+        Matrix c = Matrix.powerOfSquareMatrix(b, n / 2);
+        c = Matrix.multiply(c, c);
+        if (n % 2 == 0) {
+            return c; // case when n is even
+        }
+        return multiply(c, b); // case when n is odd
+    }
+    
     /**
      * Transpose of a matrix - Swap the columns with rows
      * http://en.wikipedia.org/wiki/Transpose
@@ -285,7 +303,12 @@ public final class Matrix {
      */
     public static Matrix add(Matrix matrix1, Matrix matrix2) throws IllegalDimensionException {
         if (matrix1.getNcols() != matrix2.getNcols() || matrix1.getNrows() != matrix2.getNrows()) {
-            throw new IllegalDimensionException("Two matrices should be the same dimension.");
+            String msg = "\nERROR: Two matrices should be the same dimension.\n";
+            msg += matrix1.toString();
+            msg += matrix1.fill("=", 40, "");
+            msg += "\n";
+            msg += matrix2.toString();
+            throw new IllegalDimensionException(msg);
         }
         Matrix sumMatrix = new Matrix(matrix1.getNrows(), matrix1.getNcols());
         for (int i = 0; i < matrix1.getNrows(); i++) {
@@ -352,7 +375,7 @@ public final class Matrix {
         return multipliedMatrix;
     }
 
-    /**
+     /**
      * If you take 0.00 * -12.0 then you get -0.00. This method fixes this.
      *
      * http://en.wikipedia.org/wiki/Signed_zero
