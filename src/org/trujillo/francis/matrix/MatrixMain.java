@@ -42,7 +42,7 @@ public class MatrixMain {
 
             Matrix coordinateMatrix = new Matrix(coords);
 
-            Matrix.setShowWork();
+            //Matrix.setShowWork();
             double area = Matrix.calculateAreaOfTriangleUsing3CoordinateMatrix(coordinateMatrix);
 
 // ==============================================================================================
