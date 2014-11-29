@@ -13,8 +13,6 @@ public class MatrixMain {
                 {2, -2, 4, 2},
                 {-1, 1.0 / 2.0, -1, 0},
                 {1, 2, 3, 4}
-            //                {1, 5},
-            //                {1, -2}
             };
 
             double[][] vec = new double[][]{
@@ -22,8 +20,6 @@ public class MatrixMain {
                 {-2},
                 {0},
                 {-2}
-//                {7},
-//                {-2}
             };
 
             Matrix matrix = new Matrix(mat);
